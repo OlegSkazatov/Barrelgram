@@ -1,0 +1,79 @@
+.h1 {
+  font: 30pt/30pt century gothic;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+p {
+    font: 12px/20px century gothic;
+}
+
+.gradient {
+    position: fixed;
+    min-height: 100%;
+    width: 100%;
+    left:0;
+    top:0;
+    background: linear-gradient(to top, #FF7C42,#42FFF3);
+}
+
+.h2 {
+  font: 20pt/20pt century gothic;
+  color: rgb(255,255,150);
+}
+
+.form-control {
+    width: 300px;
+    height: 25px;
+    font: 10pt/20pt century gothic;
+    background:
+}
+
+.btn-primary {
+    background: #72C1EE;
+    font: 10pt/10pt century gothic;
+    height: 30px;
+}
+
+.no_true {
+    font: 10pt/10pt century gothic;
+    color: rgb(255, 0, 0)
+}
+
+.no_centre {
+    position: fixed;
+    left:200px;
+    top:300px;
+}
+
+.settings {
+    position: fixed;
+    left: 100px;
+    top: 50px;
+}
+
+.sett_input {
+    border: none;
+    background: transparent;
+    width: 250px;
+    height: 70px;
+    font-size: 20px;
+    outline: none;
+}
+
+.select_sex {
+    width: 200px;
+    height: 25px;
+    font-size: 20px;
+    outline: none;
+    border: none;
+    background: transparent;
+}
+
+.select {
+    width: 80px;
+    height: 30px;
+    outline: none;
+    border: none;
+    background: transparent;
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/css.css') }}">
+    <title>Подтвердите почту</title>
+</head>
+<body>
+<div class="gradient">
+    <div class="no_centre">
+        {% if method == 'GET' %}
+            <h1 class="h1">На этот email отправить подтверждение? {{ email }}</h1>
+            <br>
+            <form class="login_form" method="post">
+                <button type="submit" class="btn-primary">Да</button>
+                <a href="/reg"><input class="btn-primary" type="button" value="Нет, указать другой"></a>
+            </form>
+        {% elif method == 'POST' %}
+            <form>
+                <h1 class="h1">Мы отправили вам cсылку по почте! (Если его там нет проверьте папку спам)</h1>
+                <h2 class="h2">Это окно может быть закрыто</h2>
+            </form>
+        {% else %}
+            <form>
+                <h1 class="h1">Вы успешно зарегестрированы!</h1>
+                <a href="/">Вернуться на главную</a>
+            </form>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
