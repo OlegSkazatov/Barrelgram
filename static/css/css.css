@@ -2,19 +2,26 @@
   font: 30pt/30pt century gothic;
   text-transform: uppercase;
   color: #fff;
-}
+  }
 
 p {
     font: 12px/20px century gothic;
+
 }
 
-.gradient {
+.p2 {
+    font: 20px/20px century gothic;
+    margin: 0;
+    margin-top: 10px;
+}
+
+.background_fon {
     position: fixed;
     min-height: 100%;
     width: 100%;
     left:0;
     top:0;
-    background: linear-gradient(to top, #FF7C42,#42FFF3);
+    background: #87cefa;
 }
 
 .h2 {
@@ -76,4 +83,47 @@ p {
     outline: none;
     border: none;
     background: transparent;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #ccc;
+}
+
+body {
+    padding-top: 100px;
+}
+
+.div {
+    float: left;
+    margin-top: 150px;
+    width: 60%;
+    margin-left: 10px;
+    margin-right: 20px;
+    padding-left: 100px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #42aaff;
+    }
+
+.div2 {
+    float: left;
+    margin-top: 150px;
+    }
+
+.search {
+    width: 100%;
+    height: 30px;
+    background-image: url(data:image/svg+xml;charset=utf-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20opacity%3D%22.92%22%3E%3Cpath%20opacity%3D%22.1%22%20d%3D%22M0%200H16V16H0z%22%2F%3E%3Cpath%20d%3D%22M6.5%201a5.5%205.5%200%200%201%204.383%208.823l3.896%203.9a.75.75%200%200%201-1.061%201.06l-3.895-3.9A5.5%205.5%200%201%201%206.5%201zm0%201.5a4%204%200%201%200%200%208%204%204%200%200%200%200-8z%22%20fill%3D%22%23818c99%22%20fill-rule%3D%22nonzero%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E);
+    background-position: 10px;
+    background-repeat: no-repeat;
+    text-indent: 30px;
+    border: 0;
+    background-color: #42aaff;
+    border-radius: 8px;
+    margin: 0;
 }

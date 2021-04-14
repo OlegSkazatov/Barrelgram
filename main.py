@@ -34,7 +34,7 @@ def menu():
         result = database.execute(f"SELECT email FROM users WHERE email = '{request.form['email']}'")
         try:
             emails = result.first()[0]
-        except IndexError:
+        except Exception:
             emails = []
         if request.form['email'] not in emails:
             return render_template('menu.html', problem=1)
@@ -61,10 +61,6 @@ def reg():
         result = database.execute(f"SELECT email FROM users WHERE email = '{request.form['email']}'")
         if result.first() is not None:
             return render_template('reg.html', messenge='Такой e-mail уже зарегестрирован')
-        # result = database.execute(f"SELECT ip FROM users WHERE ip = '{ip}'")
-        # if sql.fetchone() is not None:
-        #     return render_template('reg.html',
-        #                            messenge='Вы можете зарегестрировать только 1 аккаунт!')
         if request.form['password'] != request.form['password2']:
             return render_template("reg.html", messenge='Пароли не совпадают')
         elif len(request.form['password']) < 8:
@@ -72,7 +68,7 @@ def reg():
         database.execute(
             "INSERT INTO users (email, ip, password, confirmed, name, birthday, sex) VALUES ('{}', '{}', '{}', {}, '{}', '{}', '{}')".format(
                 str(request.form['email']), '',
-                str(request.form['password']), 'false',
+                str(request.form['password']), '0',
                 '', '', ''))
         return redirect(f"/email_accept/{request.form['email']}")
 
@@ -116,7 +112,15 @@ def settings():
 
 @app.route('/main')
 def main():
-    return "Владимир Путин Молодец, а это в разработке"
+    return render_template('main.html')
+
+
+@app.route('/go_out')
+def go_out():
+    ip = request.remote_addr
+    database.execute(
+        f"UPDATE users SET ip = '' WHERE ip = '{ip}'")
+    return redirect('/')
 
 
 if __name__ == '__main__':
