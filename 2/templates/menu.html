@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="static/data/icon.png?v=2" type="image/png">
+    <link rel="stylesheet" href="static/css/css.css">
+    <title>Barrelgram</title>
+</head>
+<body>
+<div class="background_fon">
+    <div class="no_centre">
+        <h1 class="h1">Добро пожаловать в наш мессенжер</h1>
+        <h2 class="h2">Войдите в свой аккаунт или зарегистрируйтесь</h2>
+        <form class="login_form" method="post">
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                   placeholder="Введите адрес почты или телефон" name="email">
+            <br>
+            <br><input type="password" class="form-control" placeholder="Введите пароль"
+                       name="password">
+            <br>
+            <p></p>
+            {% if problem == 1 %}
+                <p class="no_true">Не верный логин или пароль! Если у вас нет аккаунта <a href="/reg">зарегестрируйтесь</a></p>
+            {% endif %}
+            <button type="submit" class="btn-primary">Войти</button>
+            <a href="/reg">  Создайть новый аккаунт</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

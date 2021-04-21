@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Olayyyyy</title>
+    <link rel="stylesheet" href="static/css/css.css">
+</head>
+<body>
+<div class="background_fon">
+    <header class="header ">
+        <div class="header_text">
+            <h2 class="h2">Barrelgram</h2>
+            <a href="/go_out"> Выйти из аккаунта</a>
+        </div>
+    </header>
+    <div class="div">
+        <div>
+            <input class="search" type="text" placeholder="Поиск">
+        </div>
+        <div class="people">
+            {% for i in range(2) %}
+            <div class="man">
+                <table>
+                    <tr>
+                        <td rowspan="2"><img src="{{ ava_name }}" width="50"></td>
+                        <td><span class="name">Кто-то</span><br></td>
+                        <td class="menu_button" width="500" rowspan="2">
+                            <button type="button" class="menu_button">→</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="last_name">Ласт сообщение</span></td>
+                    </tr>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="div2">
+
+    </div>
+</div>
+</body>
+</html>

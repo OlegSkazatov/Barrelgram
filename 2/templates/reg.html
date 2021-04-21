@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="static/css/css.css">
+    <title>OLayyyyy</title>
+</head>
+<body>
+<div class="background_fon">
+    <div class="no_centre">
+        <h1 class="h1">Приветствую тебя в нашем мессенжере!</h1>
+        <h2 class="h2">На этой странице ты можешь создать новый аккаунт</h2>
+        <form class="login_form" method="post">
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                   placeholder="Введите адрес почты" name="email">
+            <br>
+            <br><input type="password" class="form-control" placeholder="Введите пароль"
+                       name="password">
+            <br>
+            <br><input type="password" class="form-control" placeholder="Повторите пароль"
+                       name="password2">
+                <p class="no_true">{{ messenge }}</p>
+            <p></p>
+            <button type="submit" class="btn-primary">Зарегестрироваться</button>
+            <a href="/">  Войти в аккаунт</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>
