@@ -27,41 +27,36 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 def login_user(username, password, ip, request, app_client):
     result = database.execute(f"SELECT email FROM users WHERE ip = '{ip}'")
     if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
-        print(1)
         return redirect("/main")
-    if request.method == 'GET' and not app_client:
-        return render_template('menu.html', problem=0)
     else:
-        print(0)
-        result = database.execute(f"SELECT email FROM users WHERE email = '{email}'")
+        result = database.execute(f"SELECT email FROM users WHERE email = '{username}'")
         try:
             emails = result.first()[0]
         except Exception:
             emails = []
         if username not in emails:
-            print(2)
             if not app_client:
                 return render_template('menu.html', problem=1)
             else:
                 with open('responses/access_denied.json', encoding='utf-8') as response:
                     t = json.load(response)
                     t["reason"] = 1
-                    print(3)
                     return json.dumps(t)
         else:
             result = database.execute(f"SELECT password FROM users WHERE email = '{request.form['email']}'")
             password_true = result.first()[0]
-            print(4)
             if password_true == password:
                 database.execute(
                     f"UPDATE users SET ip = '{str(ip)}' WHERE email = '{request.form['email']}'")
-                return redirect("/settings")
+                result = database.execute(f"SELECT name FROM users WHERE email = '{request.form['email']}'")
+                if not result.first():
+                    return redirect("/settings")
+                return redirect("/main")
             else:
                 if app_client:
                     with open('responses/access_denied.json', encoding='utf-8') as response:
                         t = json.load(response)
                         t["reason"] = 1
-                        print(5)
                         return json.dumps(t)
                 return render_template('menu.html', problem=1)
 
@@ -70,14 +65,17 @@ def login_user(username, password, ip, request, app_client):
 def menu():
     app_client = request.args.get('app_client', False)  # Проверка заходит клиент с приложения или сайта
     if not app_client:
-        return login_user(request.form['email'], request.form['password'], request.remote_addr, request, False)
+        result = database.execute(f"SELECT email FROM users WHERE ip = '{request.remote_addr}'")
+        if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
+            return redirect("/main")
+        if request.method == 'GET' and not app_client:
+            return render_template('menu.html', problem=0)
+        else:
+            return login_user(request.form['email'], request.form['password'], request.remote_addr, request, False)
     else:
         login = request.args.get('login', '')
         password = request.args.get('password', '')
         return login_user(login, password, request.remote_addr, request, True)
-
-
-
 
 
 @app.route('/reg', methods=['POST', 'GET'])
@@ -96,7 +94,8 @@ def reg():
             return render_template("reg.html", messenge='Пароли не совпадают')
         elif len(request.form['password']) < 8:
             return render_template("reg.html", messenge='Слишком короткий пароль!')
-        password = str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + request.form['password']
+        password = str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + request.form[
+            'password']
         for i in range(len(password[2:])):
             print(i)
         database.execute(
@@ -146,7 +145,12 @@ def settings():
 
 @app.route('/main')
 def main():
-    return render_template('main.html', ava_name='https://get.pxhere.com/photo/landscape-nature-wilderness-walking-mountain-sky-lake-adventure-view-river-valley-mountain-range-environment-rural-reflection-scenic-peaceful-glacier-scenery-serene-fjord-tourism-national-park-ridge-ecology-clouds-mountains-alps-backpacking-plateau-fell-cirque-loch-crater-lake-moraine-landform-tarn-mountain-pass-geographical-feature-mountainous-landforms-glacial-landform-848203.jpg')
+    app_client = request.args.get('app_client', False)  # Проверка заходит клиент с приложения или сайта
+    if not app_client:
+        return render_template('main.html',
+                               ava_name='https://get.pxhere.com/photo/landscape-nature-wilderness-walking-mountain-sky-lake-adventure-view-river-valley-mountain-range-environment-rural-reflection-scenic-peaceful-glacier-scenery-serene-fjord-tourism-national-park-ridge-ecology-clouds-mountains-alps-backpacking-plateau-fell-cirque-loch-crater-lake-moraine-landform-tarn-mountain-pass-geographical-feature-mountainous-landforms-glacial-landform-848203.jpg')
+    with open('responses/main_page.json', encoding='utf-8') as response:
+        return response
 
 
 @app.route('/go_out')

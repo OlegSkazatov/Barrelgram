@@ -2,18 +2,23 @@ import sys
 
 import requests
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QStackedWidget
 
 SERVER_ADDRESS = "127.0.0.1:9999"
 
 
-class Main(QMainWindow):
+class Login(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
         uic.loadUi('ui/login.ui', self)
+        self.stack = QStackedWidget()
+        self.stack.addWidget(self)
+        self.stack.setCurrentWidget(self)
+        self.stack.setGeometry(self.geometry())
+        self.stack.show()
         self.button_login.clicked.connect(self.login)
 
     def login(self):
@@ -31,13 +36,19 @@ class Main(QMainWindow):
             self.button_login.setText("Ты даун")
 
 
+class Main(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('ui/untitled.ui', self)
+
+
 def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main = Main()  # Создаём и отображаем главное окно
+    main = Login()  # Создаём и отображаем главное окно
     main.show()
     sys.excepthook = except_hook
     sys.exit(app.exec())
