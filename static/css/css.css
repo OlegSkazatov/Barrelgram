@@ -1,7 +1,7 @@
 .h1 {
   font: 30pt/30pt century gothic;
   text-transform: uppercase;
-  color: #fff;
+  color: #FAB300;
   }
 
 p {
@@ -17,34 +17,34 @@ p {
 
 .background_fon {
     position: fixed;
+    background-size: cover;
     min-height: 100%;
     width: 100%;
     left:0;
     top:0;
-    background: #87cefa;
+    background-image: url(https://freehtmlthemes.ru/assets/images/articles/css-fon.jpg);
 }
 
 .h2 {
   font: 20pt/20pt century gothic;
-  color: rgb(255,255,150);
+  color: #FAB300;
 }
 
 .form-control {
     width: 300px;
     height: 25px;
     font: 10pt/20pt century gothic;
-    background:
 }
 
 .btn-primary {
-    background: #72C1EE;
+    background: #FAB300;
     font: 10pt/10pt century gothic;
     height: 30px;
 }
 
 .no_true {
     font: 10pt/10pt century gothic;
-    color: rgb(255, 0, 0)
+    color: rgb(255, 0, 0);
 }
 
 .no_centre {
@@ -90,6 +90,7 @@ p {
     top: 0;
     left: 0;
     right: 0;
+    height: 100px;
     background-color: #ccc;
 }
 
@@ -99,31 +100,54 @@ body {
 
 .div {
     float: left;
-    margin-top: 150px;
+    margin-top: 100px;
     width: 60%;
-    margin-left: 10px;
-    margin-right: 20px;
+    height: 80vh;
     padding-left: 100px;
-    max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
-    background: #42aaff;
+    background: rgba(255, 204, 0, 0.3);
     }
 
 .div2 {
     float: left;
-    margin-top: 150px;
     }
 
 .search {
-    width: 100%;
-    height: 30px;
+    position: fixed;
+    width: 59%;
+    height: 50px;
     background-image: url(data:image/svg+xml;charset=utf-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20opacity%3D%22.92%22%3E%3Cpath%20opacity%3D%22.1%22%20d%3D%22M0%200H16V16H0z%22%2F%3E%3Cpath%20d%3D%22M6.5%201a5.5%205.5%200%200%201%204.383%208.823l3.896%203.9a.75.75%200%200%201-1.061%201.06l-3.895-3.9A5.5%205.5%200%201%201%206.5%201zm0%201.5a4%204%200%201%200%200%208%204%204%200%200%200%200-8z%22%20fill%3D%22%23818c99%22%20fill-rule%3D%22nonzero%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E);
     background-position: 10px;
     background-repeat: no-repeat;
     text-indent: 30px;
     border: 0;
-    background-color: #42aaff;
+    background-color: rgba(255, 204, 0, 1);
     border-radius: 8px;
     margin: 0;
+}
+
+.menu_button {
+    background: none;
+    margin-left: 100%;
+}
+
+.people {
+    margin-top: 60px;
+}
+
+.man {
+    margin-top: 5px;
+    height: 50px;
+    border-bottom: 1px solid;
+}
+
+.name{
+    font: 25px/0px century gothic;
+    font-size: 25px;
+}
+
+.last_sms {
+    font: 10px/10px century gothic;
+    font-size: 10px;
 }

@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Text, Boolean, MetaData, Column
+from sqlalchemy import Integer, Text, Boolean, MetaData, Column, Time
 
 
 def table_init(database):
@@ -11,11 +11,8 @@ def table_init(database):
                          Column("name", Text),
                          Column("birthday", Text),
                          Column("sex", Text))
-
     database.createTable("dialogues", meta, Column("id", Integer, primary_key=True, autoincrement=True),
-                         Column("hash", Text),
-                         Column("users", Text))
-
-    database.createTable("banned-ips", meta, Column("id", Integer, primary_key=True, autoincrement=True),
-                         Column("user-id", Integer),
-                         Column("ip", Text))
+                         Column("users", Text),
+                         Column("last_message", Text),
+                         Column("last_message_time", Time),
+                         Column("blocked", Boolean))

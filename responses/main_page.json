@@ -1,0 +1,67 @@
+{
+  "verdict": "granted",
+  "id": 0,
+  "dialogues": {
+    "amount": 0,
+    "1": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "2": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "3": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "4": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "5": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "6": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "7": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "8": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "9": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    },
+    "10": {
+      "name": "",
+      "last_message": "",
+      "photo": "",
+      "blocked": false
+    }
+  }
+}

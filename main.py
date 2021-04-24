@@ -1,5 +1,7 @@
 import os
 import sqlite3
+import random
+import json
 
 from flask import Flask, render_template, request, redirect
 
@@ -22,31 +24,58 @@ app.secret_key = os.urandom(24)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-@app.route('/', methods=['POST', 'GET'])
-def menu():
-    ip = request.remote_addr
+def login_user(username, password, ip, request, app_client):
     result = database.execute(f"SELECT email FROM users WHERE ip = '{ip}'")
-    if result.first() is not None:
+    if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
         return redirect("/main")
-    if request.method == 'GET':
-        return render_template('menu.html', problem=0)
     else:
-        result = database.execute(f"SELECT email FROM users WHERE email = '{request.form['email']}'")
+        result = database.execute(f"SELECT email FROM users WHERE email = '{username}'")
         try:
             emails = result.first()[0]
         except Exception:
             emails = []
-        if request.form['email'] not in emails:
-            return render_template('menu.html', problem=1)
+        if username not in emails:
+            if not app_client:
+                return render_template('menu.html', problem=1)
+            else:
+                with open('responses/access_denied.json', encoding='utf-8') as response:
+                    t = json.load(response)
+                    t["reason"] = 1
+                    return json.dumps(t)
         else:
             result = database.execute(f"SELECT password FROM users WHERE email = '{request.form['email']}'")
-            password = result.first()[0]
-            if password == request.form['password']:
+            password_true = result.first()[0]
+            if password_true == password:
                 database.execute(
                     f"UPDATE users SET ip = '{str(ip)}' WHERE email = '{request.form['email']}'")
-                return redirect("/settings")
+                result = database.execute(f"SELECT name FROM users WHERE email = '{request.form['email']}'")
+                if not result.first():
+                    return redirect("/settings")
+                return redirect("/main")
             else:
+                if app_client:
+                    with open('responses/access_denied.json', encoding='utf-8') as response:
+                        t = json.load(response)
+                        t["reason"] = 1
+                        return json.dumps(t)
                 return render_template('menu.html', problem=1)
+
+
+@app.route('/', methods=['POST', 'GET'])
+def menu():
+    app_client = request.args.get('app_client', False)  # Проверка заходит клиент с приложения или сайта
+    if not app_client:
+        result = database.execute(f"SELECT email FROM users WHERE ip = '{request.remote_addr}'")
+        if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
+            return redirect("/main")
+        if request.method == 'GET' and not app_client:
+            return render_template('menu.html', problem=0)
+        else:
+            return login_user(request.form['email'], request.form['password'], request.remote_addr, request, False)
+    else:
+        login = request.args.get('login', '')
+        password = request.args.get('password', '')
+        return login_user(login, password, request.remote_addr, request, True)
 
 
 @app.route('/reg', methods=['POST', 'GET'])
@@ -65,10 +94,14 @@ def reg():
             return render_template("reg.html", messenge='Пароли не совпадают')
         elif len(request.form['password']) < 8:
             return render_template("reg.html", messenge='Слишком короткий пароль!')
+        password = str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + request.form[
+            'password']
+        for i in range(len(password[2:])):
+            print(i)
         database.execute(
             "INSERT INTO users (email, ip, password, confirmed, name, birthday, sex) VALUES ('{}', '{}', '{}', {}, '{}', '{}', '{}')".format(
                 str(request.form['email']), '',
-                str(request.form['password']), '0',
+                str(request.form['password']), 'false',
                 '', '', ''))
         return redirect(f"/email_accept/{request.form['email']}")
 
@@ -112,7 +145,20 @@ def settings():
 
 @app.route('/main')
 def main():
-    return render_template('main.html')
+    app_client = request.args.get('app_client', False)  # Проверка заходит клиент с приложения или сайта
+    if not app_client:
+        return render_template('main.html',
+                               ava_name='https://get.pxhere.com/photo/landscape-nature-wilderness-walking-mountain-sky-lake-adventure-view-river-valley-mountain-range-environment-rural-reflection-scenic-peaceful-glacier-scenery-serene-fjord-tourism-national-park-ridge-ecology-clouds-mountains-alps-backpacking-plateau-fell-cirque-loch-crater-lake-moraine-landform-tarn-mountain-pass-geographical-feature-mountainous-landforms-glacial-landform-848203.jpg')
+    with open('responses/main_page.json', encoding='utf-8') as res:
+        dct = json.load(res)
+
+        id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
+        dct["id"] = id
+        dialogues = [el for el in database.execute(f"SELECT * FROM dialogues WHERE users LIKE '{id}'")]
+
+        response = json.dumps(dct)
+
+        return response
 
 
 @app.route('/go_out')

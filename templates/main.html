@@ -14,16 +14,27 @@
         </div>
     </header>
     <div class="div">
-        <input class="search" type="text" placeholder="Поиск">
-        <ul>
-            <li>
-                <div>
-                    <span>Что-то</span>
-                    <button type="button">Кто-то</button>
-                </div>
-            </li>
-            <li></li>
-        </ul>
+        <div>
+            <input class="search" type="text" placeholder="Поиск">
+        </div>
+        <div class="people">
+            {% for i in range(2) %}
+            <div class="man">
+                <table>
+                    <tr>
+                        <td rowspan="2"><img src="{{ ava_name }}" width="50"></td>
+                        <td><span class="name">Кто-то</span><br></td>
+                        <td class="menu_button" width="500" rowspan="2">
+                            <button type="button" class="menu_button">→</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="last_name">Ласт сообщение</span></td>
+                    </tr>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
     </div>
     <div class="div2">
 
