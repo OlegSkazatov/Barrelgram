@@ -6,10 +6,11 @@ import json
 from flask import Flask, render_template, request, redirect
 
 from email_authorize.EmailManager import EmailManager
+from dialogues.DialogueManager import DialogueManager
 from Database.Database import Database
 from Database.table_init import table_init
 
-emailManager = EmailManager()
+emailManager = EmailManager() # Обработчик отправки сообщений для подтверждения e-mail
 
 conn = sqlite3.connect('database.db', check_same_thread=False)  # Создание файла базы данных, если его нет
 sql = conn.cursor()
@@ -17,6 +18,7 @@ conn.commit()
 conn.close()
 
 database = Database("database.db")  # Создаём объект для работы с БД
+dialManager = DialogueManager(database) # Обработчик диалогов
 table_init(database)  # Создаём главные таблицы если их нет
 
 app = Flask(__name__)
@@ -27,7 +29,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 def login_user(username, password, ip, request, app_client):
     result = database.execute(f"SELECT email FROM users WHERE ip = '{ip}'")
     if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
-        return redirect("/main")
+        return redirect(f"/main?app_client={app_client}")
     else:
         result = database.execute(f"SELECT email FROM users WHERE email = '{username}'")
         try:
@@ -43,15 +45,15 @@ def login_user(username, password, ip, request, app_client):
                     t["reason"] = 1
                     return json.dumps(t)
         else:
-            result = database.execute(f"SELECT password FROM users WHERE email = '{request.form['email']}'")
+            result = database.execute(f"SELECT password FROM users WHERE email = '{username}'")
             password_true = result.first()[0]
             if password_true == password:
                 database.execute(
-                    f"UPDATE users SET ip = '{str(ip)}' WHERE email = '{request.form['email']}'")
-                result = database.execute(f"SELECT name FROM users WHERE email = '{request.form['email']}'")
-                if not result.first():
+                    f"UPDATE users SET ip = '{str(ip)}' WHERE email = '{username}'")
+                result = database.execute(f"SELECT name FROM users WHERE email = '{username}'")
+                if not result.first()[0]:
                     return redirect("/settings")
-                return redirect("/main")
+                return redirect(f"/main?app_client={app_client}")
             else:
                 if app_client:
                     with open('responses/access_denied.json', encoding='utf-8') as response:
@@ -61,9 +63,15 @@ def login_user(username, password, ip, request, app_client):
                 return render_template('menu.html', problem=1)
 
 
+def getUserInfo(id):
+    result = database.execute(f"SELECT * FROM users WHERE id = {str(id)}")
+    return result.first()
+
+
 @app.route('/', methods=['POST', 'GET'])
 def menu():
-    app_client = request.args.get('app_client', False)  # Проверка заходит клиент с приложения или сайта
+    app_client = request.args.get('app_client', False) == "True"  # Проверка заходит клиент с приложения или сайта
+    print(app_client)
     if not app_client:
         result = database.execute(f"SELECT email FROM users WHERE ip = '{request.remote_addr}'")
         if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
@@ -128,6 +136,10 @@ def email_confirm(emaill, kod):
 
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
+    app_client = request.args.get('app_client', False) == "True"
+    if app_client:
+        with open("responses/access_denied.json", encoding="utf-8") as jsonfile:
+            return jsonfile
     ip = request.remote_addr
     if request.method == 'GET':
         return render_template('settings.html')
@@ -145,20 +157,37 @@ def settings():
 
 @app.route('/main')
 def main():
-    app_client = request.args.get('app_client', False)  # Проверка заходит клиент с приложения или сайта
+    app_client = request.args.get('app_client', False) == "True"  # Проверка заходит клиент с приложения или сайта
     if not app_client:
         return render_template('main.html',
                                ava_name='https://get.pxhere.com/photo/landscape-nature-wilderness-walking-mountain-sky-lake-adventure-view-river-valley-mountain-range-environment-rural-reflection-scenic-peaceful-glacier-scenery-serene-fjord-tourism-national-park-ridge-ecology-clouds-mountains-alps-backpacking-plateau-fell-cirque-loch-crater-lake-moraine-landform-tarn-mountain-pass-geographical-feature-mountainous-landforms-glacial-landform-848203.jpg')
     with open('responses/main_page.json', encoding='utf-8') as res:
         dct = json.load(res)
-
         id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
         dct["id"] = id
-        dialogues = [el for el in database.execute(f"SELECT * FROM dialogues WHERE users LIKE '{id}'")]
+        dialogues = [el for el in database.execute(
+            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY date(last_message_time) DESC Limit 1").fetchall()]
+        dct["dialogues"]["amount"] = len(dialogues)
+        for i in range(len(dialogues)):
+            users = dialogues[i][1].split(";")
+            users.remove(str(id))
+            user = getUserInfo(int(users[0]))
 
+            name = " ".join(user[5].split(";"))
+            last_message = dialogues[i][2]
+            photo = int(users[0])
+
+            dct["dialogues"][str(i + 1)]["name"] = name
+            dct["dialogues"][str(i + 1)]["last_message"] = last_message
+            dct["dialogues"][str(i + 1)]["photo"] = photo
         response = json.dumps(dct)
-
         return response
+
+
+@app.route('main/dialogue/<id>')
+def dialogue(id):
+    messages = dialManager.getMessages(id)
+    # Дальше как-нибудь в json это всё и послать клиенту
 
 
 @app.route('/go_out')

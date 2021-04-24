@@ -14,5 +14,5 @@ def table_init(database):
     database.createTable("dialogues", meta, Column("id", Integer, primary_key=True, autoincrement=True),
                          Column("users", Text),
                          Column("last_message", Text),
-                         Column("last_message_time", Time),
+                         Column("last_message_time", Text),
                          Column("blocked", Boolean))
