@@ -24,16 +24,18 @@ class DialogueManager:
         return result[len(result) - amount:]
 
     def sendMessage(self, dial_id, sender_id, receiver_id, message):
-        result = self.database.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=''")
+        result = self.database.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name = 'dial_{dial_id}'")
         if not result.first():
             self.createNew(sender_id, receiver_id)
             dial_id = self.database.execute(f"SELECT id FROM dialogues WHERE users ="
                                             f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
             self.sendMessage(dial_id, sender_id, receiver_id, message)
         self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
-                              f" datetime('now', 'localtime'), 'text', '{message}'), 1")
+                              f" datetime('now', 'localtime'), 'text', '{message}', 1)")
         self.database.execute(f"UPDATE dialogues SET last_message_time"
                               f" = datetime('now', 'localtime') WHERE id = {dial_id}")
+        self.database.execute(f"UPDATE dialogues SET last_message"
+                              f" = '{message}' WHERE id = {dial_id}")
 
     def sendVideo(self, dial_id, sender_id, receiver_id, path):
         pass

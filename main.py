@@ -10,7 +10,7 @@ from dialogues.DialogueManager import DialogueManager
 from Database.Database import Database
 from Database.table_init import table_init
 
-emailManager = EmailManager() # Обработчик отправки сообщений для подтверждения e-mail
+emailManager = EmailManager()  # Обработчик отправки сообщений для подтверждения e-mail
 
 conn = sqlite3.connect('database.db', check_same_thread=False)  # Создание файла базы данных, если его нет
 sql = conn.cursor()
@@ -18,7 +18,7 @@ conn.commit()
 conn.close()
 
 database = Database("database.db")  # Создаём объект для работы с БД
-dialManager = DialogueManager(database) # Обработчик диалогов
+dialManager = DialogueManager(database)  # Обработчик диалогов
 table_init(database)  # Создаём главные таблицы если их нет
 
 app = Flask(__name__)
@@ -63,6 +63,11 @@ def login_user(username, password, ip, request, app_client):
                 return render_template('menu.html', problem=1)
 
 
+def check_login(address):
+    result = database.execute(f"SELECT email FROM users WHERE ip = '{address}'")
+    return bool(result.first())
+
+
 def getUserInfo(id):
     result = database.execute(f"SELECT * FROM users WHERE id = {str(id)}")
     return result.first()
@@ -71,7 +76,6 @@ def getUserInfo(id):
 @app.route('/', methods=['POST', 'GET'])
 def menu():
     app_client = request.args.get('app_client', False) == "True"  # Проверка заходит клиент с приложения или сайта
-    print(app_client)
     if not app_client:
         result = database.execute(f"SELECT email FROM users WHERE ip = '{request.remote_addr}'")
         if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
@@ -104,8 +108,6 @@ def reg():
             return render_template("reg.html", messenge='Слишком короткий пароль!')
         password = str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + request.form[
             'password']
-        for i in range(len(password[2:])):
-            print(i)
         database.execute(
             "INSERT INTO users (email, ip, password, confirmed, name, birthday, sex) VALUES ('{}', '{}', '{}', {}, '{}', '{}', '{}')".format(
                 str(request.form['email']), '',
@@ -136,6 +138,8 @@ def email_confirm(emaill, kod):
 
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
+    if not check_login(request.remote_addr):
+        return redirect("/")
     app_client = request.args.get('app_client', False) == "True"
     if app_client:
         with open("responses/access_denied.json", encoding="utf-8") as jsonfile:
@@ -157,6 +161,8 @@ def settings():
 
 @app.route('/main')
 def main():
+    if not check_login(request.remote_addr):
+        return redirect("/")
     app_client = request.args.get('app_client', False) == "True"  # Проверка заходит клиент с приложения или сайта
     if not app_client:
         return render_template('main.html',
@@ -166,28 +172,108 @@ def main():
         id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
         dct["id"] = id
         dialogues = [el for el in database.execute(
-            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY date(last_message_time) DESC Limit 1").fetchall()]
+            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY date(last_message_time) DESC").fetchall()]
+        print(dialogues)
         dct["dialogues"]["amount"] = len(dialogues)
         for i in range(len(dialogues)):
             users = dialogues[i][1].split(";")
             users.remove(str(id))
             user = getUserInfo(int(users[0]))
 
+            id1 = dialogues[i][0]
             name = " ".join(user[5].split(";"))
             last_message = dialogues[i][2]
             photo = int(users[0])
+            result = [el for el in
+                      database.execute(f"SELECT * FROM dial_{id1} WHERE new = 1 AND user != {id}").fetchall()]
+            new_messages = len(result)
+            result = [el for el in database.execute(f"SELECT * FROM dial_{id1}").fetchall()]
+            new = len(result) == new_messages
+            last_message_time = ":".join(dialManager.getMessages(id1, amount=1)[0][2].split(" ")[1].split(":")[:2])
+            result.clear()
 
+            dct["dialogues"][str(i + 1)]["id"] = id1
+            dct["dialogues"][str(i + 1)]["new_messages"] = new_messages
+            dct["dialogues"][str(i + 1)]["new"] = new
             dct["dialogues"][str(i + 1)]["name"] = name
             dct["dialogues"][str(i + 1)]["last_message"] = last_message
+            dct["dialogues"][str(i + 1)]["last_message_time"] = last_message_time
             dct["dialogues"][str(i + 1)]["photo"] = photo
         response = json.dumps(dct)
         return response
 
 
-@app.route('main/dialogue/<id>')
+@app.route('/main/dialogue/<id>', methods=['POST', 'GET'])
 def dialogue(id):
-    messages = dialManager.getMessages(id)
-    # Дальше как-нибудь в json это всё и послать клиенту
+    if not check_login(request.remote_addr):
+        return redirect("/")
+    if request.method == 'GET':
+        user_id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
+        database.execute(f"UPDATE dial_{id} SET new = 0 WHERE user != {user_id}")
+        messages = dialManager.getMessages(id, 20)
+        response = {}
+        for message in messages:
+            id = message[0]
+            user = message[1]
+            time = message[2]
+            type = message[3]
+            text = message[4]
+            new = message[5]
+            response[id] = {
+                "user": user,
+                "time": time,
+                "type": type,
+                "text": text,
+                "new": new
+            }
+        return json.dumps(response)
+    else:
+        action = request.form['action']
+        if action == "text":
+            message = request.form['message'].strip("\n").replace("'", "''")
+            user_id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
+            receiver_id = request.form['receiver']
+            dialManager.sendMessage(id, user_id, receiver_id, message)
+            return "Message sent!"
+
+
+
+@app.route("/main/dialogues")
+def dialogues():
+    if not check_login(request.remote_addr):
+        return redirect("/")
+    with open('responses/main_page.json', encoding='utf-8') as res:
+        dct = json.load(res)
+        id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
+        dct["id"] = id
+        dialogues = [el for el in database.execute(
+            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY date(last_message_time) DESC").fetchall()]
+        dct["dialogues"]["amount"] = len(dialogues)
+        for i in range(len(dialogues)):
+            users = dialogues[i][1].split(";")
+            users.remove(str(id))
+            user = getUserInfo(int(users[0]))
+
+            id1 = dialogues[i][0]
+            name = " ".join(user[5].split(";"))
+            last_message = dialogues[i][2]
+            photo = int(users[0])
+            result = [el for el in database.execute(f"SELECT * FROM dial_{id1} WHERE new = 1 AND user != {id}").fetchall()]
+            new_messages = len(result)
+            result = [el for el in database.execute(f"SELECT * FROM dial_{id1}").fetchall()]
+            new = len(result) == new_messages
+            last_message_time = ":".join(dialManager.getMessages(id1, amount=1)[0][2].split(" ")[1].split(":")[:2])
+            result.clear()
+
+            dct["dialogues"][str(i + 1)]["id"] = id1
+            dct["dialogues"][str(i + 1)]["new_messages"] = new_messages
+            dct["dialogues"][str(i + 1)]["new"] = new
+            dct["dialogues"][str(i + 1)]["name"] = name
+            dct["dialogues"][str(i + 1)]["last_message"] = last_message
+            dct["dialogues"][str(i + 1)]["last_message_time"] = last_message_time
+            dct["dialogues"][str(i + 1)]["photo"] = photo
+        response = json.dumps(dct)
+        return response
 
 
 @app.route('/go_out')

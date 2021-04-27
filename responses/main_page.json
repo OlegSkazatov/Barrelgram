@@ -4,63 +4,103 @@
   "dialogues": {
     "amount": 0,
     "1": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "2": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "3": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "4": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "5": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "6": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "7": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "8": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "9": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     },
     "10": {
+      "id": 0,
       "name": "",
       "last_message": "",
+      "last_message_time": "00:00",
+      "new_messages": 0,
       "photo": "",
+      "new": false,
       "blocked": false
     }
   }
