@@ -89,9 +89,10 @@ def menu():
         else:
             return login_user(request.form['email'], request.form['password'], request.remote_addr, request, False)
     else:
-        login = request.args.get('login', '')
-        password = request.args.get('password', '')
-        return login_user(login, password, request.remote_addr, request, True)
+        if request.method == 'POST':
+            login = request.form.get('login', '')
+            password = request.form.get('password', '')
+            return login_user(login, password, request.remote_addr, request, True)
 
 
 @app.route('/reg', methods=['POST', 'GET'])
@@ -264,6 +265,8 @@ def dialogue(id):
 
 @app.route('/main/dialogue/<id>/<type>/<key>')
 def get_file(id, type, key):
+    if not check_login(request.remote_addr):
+        return redirect("/")
     ext = ""
     if type == "video":
         ext = ".mp4"
@@ -366,7 +369,13 @@ def go_out():
 
 @app.route('/avatar', methods=['POST', 'GET'])
 def avatar():
+    if not check_login(request.remote_addr):
+        return redirect("/")
+    force = request.args.get("force", False) == "True"
     ip = request.remote_addr
+    id = database.execute(f"SELECT id FROM users WHERE ip = '{ip}'").first()[0]
+    if os.path.exists(app.config['UPLOAD_FOLDER'] + f"{id}.jpg") and not force:
+        return redirect("/download")
     if request.method == 'GET':
         return render_template('settings2.html')
     else:
@@ -380,8 +389,8 @@ def avatar():
                 return redirect(request.url)
             if file:
                 user_id = str(database.execute(f"SELECT id FROM users WHERE ip = '{ip}'").first()[0])
-                file.save(app.config['UPLOAD_FOLDER'] + user_id)
-                return redirect(f'/all_avatars/{user_id}')
+                file.save(app.config['UPLOAD_FOLDER'] + user_id + ".jpg")
+                return redirect("/download")
 
 
 @app.route('/all_avatars/<avatar_name>')
@@ -400,7 +409,7 @@ def download():
 def set_menu():
     ip = request.remote_addr
     user_id = str(database.execute(f"SELECT id FROM users WHERE ip = '{ip}'").first()[0]) + '.jpg'
-    user_data = database.execute(f"SELECT name FROM users WHERE ip = '{ip}'").first()[0]
+    user_data = " ".join(database.execute(f"SELECT name FROM users WHERE ip = '{ip}'").first()[0].split(";"))
     return render_template('set_menu.html', file='all_avatars/' + user_id, name=user_data)
 
 

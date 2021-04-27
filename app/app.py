@@ -33,26 +33,26 @@ class Login(QMainWindow):
         self.requestThread.start()
         self.button_login.clicked.connect(self.login)
 
-    #        self.login(raw=True) Тут цыганские фокусы у PyQt, хз пока как пофиксить
+    #        self.login(raw=True) Планировалось сделать автоматический вход, но PyQt не хочет
 
     def login(self, raw=False):
         if (self.login_input.text() == "" or self.password_input.text() == "") and not raw:
             return
 
-        params = {
-            "app_client": True,
+        data = {
             "login": self.login_input.text(),
             "password": self.password_input.text()
         }
 
-        response = requests.get("http://" + SERVER_ADDRESS, params=params).json()
+        response = requests.post("http://" + SERVER_ADDRESS, data=data, params={"app_client": True}).json()
         if response["verdict"] == "denied":
             if not raw:
-                self.button_login.setText("Ты даун")
+                self.button_login.setText("Invalid data!")
             return
         else:
             if not raw:
                 global SEND_GET_REQUESTS
+                self.button_login.setText("Login")
                 self.main.updateData(response, load_photo=True)
                 self.stack.setCurrentWidget(self.main)
                 SEND_GET_REQUESTS = True
@@ -114,8 +114,13 @@ class Main(QWidget):
             for el in self.uiDialogues:
                 el[0].setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 0);")
         else:
-            self.uiDialogues[self.active_dialogue - 1][0]\
-                .setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 120);")
+            for i in range(len(self.uiDialogues)):
+                if i == self.active_dialogue - 1:
+                    self.uiDialogues[i][0] \
+                        .setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 120);")
+                else:
+                    self.uiDialogues[i][0] \
+                        .setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 0);")
 
     def support(self):
         self.search.setText("1")
@@ -277,6 +282,8 @@ class Main(QWidget):
         id = int(self.sender().objectName().split("_")[1])
         if id == self.active_dialogue or self.uiDialogues[self.delta_down + id - 1][1].text() == "":
             return
+        for el in self.uiMessages:
+            el.clear()
         self.search.setText("🔎 Enter name or id")
         self.message_input.show()
         self.button_file.show()
@@ -309,8 +316,21 @@ class Main(QWidget):
     def setMessages(self, text, scroll_to_end=False):
         text = text.strip("\n")
         text = text.split("\n")
-        text = list(map(lambda x: [x[i:i + 60] if "<a href" not in x else x for i in range(0, len(x), 60)], text))
-        text = list(map(lambda x: "\n".join(x), text))
+
+        def string_split(x):
+            if "<a href" not in x:
+                parts = []
+                while len(x) > 60:
+                    parts.append(x[:61])
+                    x = x[61:]
+                if x != "":
+                    parts.append(x)
+                return parts
+            else:
+                return x
+
+        text = list(map(lambda x: string_split(x), text))
+        text = list(map(lambda x: "".join(x), text))
         true_text = []
         for el in text:
             if "\n" not in el:

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/css/css.css">
+    <title>Меню настроек</title>
+</head>
+<body>
+<div class="background_fon">
+    <div class="no_centre">
+        <div>
+            <div>
+                <a class="p2" href="/avatar?force=True">Настроить аватарку</a>
+            </div>
+            <br>
+            <div>
+                <img width="50" height="50" src="{{url_for('static', filename=file)}}">
+            </div>
+        </div>
+        <br>
+        <div>
+            <a class="p2" href="/settings">Настроить личные данные</a>
+            <p class="p2">{{ name }}</p>
+        </div>
+        <br>
+        <div>
+            <a class="p2" href="/go_out">Выйти из аккаунта</a>
+        </div>
+    </div>
+    <div class="up_right">
+        <a href="/download"><input width="50" type="image"
+                                   src="http://cdn.onlinewebfonts.com/svg/download_75762.png"></a>
+    </div>
+</div>
+</body>
+</html>
