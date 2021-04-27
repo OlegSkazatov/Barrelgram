@@ -278,7 +278,6 @@ def get_file(id, type, key):
     if ext == "":
         return "File not found!"
     path = os.getcwd() + f"\\static\\files\\{type}\\{id}_{key}{ext}"
-    print(path)
     try:
         return send_file(path)
     except FileNotFoundError:
