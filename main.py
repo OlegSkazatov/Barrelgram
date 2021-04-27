@@ -223,7 +223,7 @@ def dialogue(id):
             dialManager.createNew(user_id, receiver)
             true_id = database.execute(f"SELECT id FROM dialogues WHERE users = '{user_id};{receiver}'").first()[0]
         database.execute(f"UPDATE dial_{true_id} SET new = 0 WHERE user != {user_id}")
-        messages = dialManager.getMessages(true_id, 20)
+        messages = dialManager.getMessages(true_id)
         response = {}
         for message in messages:
             id = message[0]
@@ -295,15 +295,16 @@ def dialogues():
 @app.route("/main/search")
 def search():
     txt = request.args.get('txt', "")
+    id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
     if txt == "":
-        return json.dumps({})
+        return json.dumps({"id": id})
     if txt.isdigit():
         result = database.execute(f"SELECT * FROM users WHERE id = {txt}")
     else:
         result = database.execute(f"SELECT * FROM users WHERE name LIKE '%{';'.join(txt.split(' '))}%'")
     users = [el for el in result.fetchall()]
     if len(users) == 0:
-        return json.dumps({})
+        return json.dumps({"id": id})
     with open('responses/main_page.json', encoding='utf-8') as res:
         dct = json.load(res)
         id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
@@ -318,6 +319,7 @@ def search():
             dct["dialogues"][str(i + 1)]["name"] = name
             dct["dialogues"][str(i + 1)]["photo"] = user_id
         response = json.dumps(dct)
+        print(dct)
         return response
 
 
@@ -351,10 +353,9 @@ def avatar():
 
 @app.route('/all_avatars/<avatar_name>')
 def all_avatars(avatar_name):
-    try:
-        return send_file('static\\all_avatars\\' + avatar_name + ".jpg")
-    except FileNotFoundError:
+    if avatar_name == "":
         return send_file('static\\all_avatars\\icon.jpg')
+    return send_file('static\\all_avatars\\' + avatar_name + ".jpg")
 
 
 @app.route('/download')

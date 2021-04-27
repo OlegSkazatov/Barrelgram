@@ -83,7 +83,8 @@ class Main(QWidget):
             (self.dial_10, self.name_10, self.last_message_10, self.photo_10, self.new_messages_10, self.time_10))
         self.my_i = None  # Все экземпляры ImageQt и QPixmap должны, судя по всему, храниться в памяти
         self.my_pixmap = None  # Иначе картинки начинают творить что-то страшное
-        self.pixmaps = [[], []]  # Поэтому в эти аттрибуты записываются все ImageQt и QPixmap
+        # Поэтому в эти аттрибуты записываются все ImageQt и QPixmap
+        self.pixmaps = [['' for i in range(10)], ['' for i in range(10)]]
         self.messages.hide()
         self.message_input.hide()
         self.button_file.hide()
@@ -97,20 +98,21 @@ class Main(QWidget):
     def updateData(self, jsonfile, load_photo=False):
         my_id = jsonfile["id"]
         my_name = jsonfile["name"]
-        self.my_i = self.load_photo(my_id, self.current_user_photo)
-        self.my_pixmap = QPixmap.fromImage(self.my_i)
+        if load_photo:
+            self.my_i = self.load_photo(my_id, self.current_user_photo)
+            self.my_pixmap = QPixmap.fromImage(self.my_i)
+            self.current_user_photo.setPixmap(self.my_pixmap)
         self.dialogues = jsonfile["dialogues"]
         if self.dialogues["amount"] < 10:  # Скрываем пустые яйчейки диалогов
             for i in range(1, 11):
                 if i > self.dialogues["amount"]:
                     for el in self.uiDialogues[i - 1]:
                         pass
-#                        el.hide()
+                #                        el.hide()
                 else:
                     for el in self.uiDialogues[i - 1]:
                         pass
-#                       el.show()
-
+        #                       el.show()
         for i in range(10):
             name = self.dialogues[str(i + 1)]["name"]
             last_message = self.dialogues[str(i + 1)]["last_message"]
@@ -124,9 +126,8 @@ class Main(QWidget):
             self.uiDialogues[i][1].setText(name)
             self.uiDialogues[i][2].setText(last_message)
             if new or load_photo:
-                self.pixmaps[0].append(self.load_photo(self.dialogues[str(i + 1)]["photo"],
-                                                                 self.uiDialogues[i][3]))
-                self.pixmaps[1].append(QPixmap.fromImage(self.pixmaps[0][i]))
+                self.pixmaps[0][i] = self.load_photo(jsonfile["dialogues"][str(i + 1)]["photo"], self.uiDialogues[i][3])
+                self.pixmaps[1][i] = QPixmap.fromImage(self.pixmaps[0][i])
                 if name != "":
                     self.uiDialogues[i][3].setPixmap(self.pixmaps[1][i])
             if name == "":
@@ -138,7 +139,6 @@ class Main(QWidget):
 
         self.your_id.setText("Your id: " + str(my_id))
         self.current_user.setText(my_name)
-        self.current_user_photo.setPixmap(self.my_pixmap)
 
     def search_fun(self):
         if "🔎" in self.search.text():
@@ -146,6 +146,9 @@ class Main(QWidget):
         else:
             global SEND_GET_REQUESTS
             SEND_GET_REQUESTS = False
+            self.searching = True
+            self.active_dialogue = None
+            self.messages.clear()
             params = {
                 "txt": self.search.text()
             }
@@ -169,13 +172,14 @@ class Main(QWidget):
         requests.post("http://" + SERVER_ADDRESS +
                       f"/main/dialogue/{self.dialogues[str(self.delta_down + id_1)]['id']}", data=data)
         self.message_input.setPlainText("")
+        self.active_dialogue = 1
+        self.updateAvatars()
 
     def updateActiveDialogue(self):
         if self.active_dialogue is None:
             return
-        id_1 = self.active_dialogue
         msgs = requests.get("http://" + SERVER_ADDRESS +
-                            f"/main/dialogue/{self.dialogues[str(self.delta_down + id_1)]['id']}").json()
+                            f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}").json()
         my_id = int(self.your_id.text().split(" ")[2])
         text = ""
         for key in msgs.keys():
@@ -184,32 +188,36 @@ class Main(QWidget):
             if msg["user"] == my_id:
                 show += "You: "
             else:
-                show += f"{self.uiDialogues[id_1 - 1][1].text().split(' ')[0]}: "
+                show += f"{self.uiDialogues[self.active_dialogue - 1 - self.delta_down][1].text().split(' ')[0]}: "
             show += msg["text"]
             text = text + "\n" + show
         self.messages.setText(text)
 
-    def openDialogue(self):
+    def openDialogue(self, id=-1):
         global SEND_GET_REQUESTS
-        id = int(self.sender().objectName().split("_")[1])
+        if id == -1:
+            id = int(self.sender().objectName().split("_")[1])
         if id == self.active_dialogue or self.uiDialogues[self.delta_down + id - 1][1].text() == "":
             return
         self.search.setText("🔎 Enter name or id")
-        SEND_GET_REQUESTS = True
         self.messages.show()
         self.message_input.show()
         self.button_file.show()
         self.button_block.show()
         self.messages.setText("")
 
-        self.active_dialogue = id
+        self.active_dialogue = self.delta_down + id
         params = {
             "receiver": int(self.dialogues[str(self.delta_down + id)]["photo"])
         }
         msgs = requests.get("http://" + SERVER_ADDRESS +
-                            f"/main/dialogue/{self.dialogues[str(self.delta_down + id)]['id']}", params=params).json()
-
+                            f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}", params=params).json()
+        if self.searching:
+            self.searching = False
+            self.active_dialogue = None
+            SEND_GET_REQUESTS = True
         my_id = int(self.your_id.text().split(" ")[2])
+        # Отображение сообщений
         for key in msgs.keys():
             msg = msgs[key]
             show = ""
@@ -219,6 +227,17 @@ class Main(QWidget):
                 show += f"{self.uiDialogues[id - 1][1].text().split(' ')[0]}: "
             show += msg["text"]
             self.messages.setText(self.messages.text() + "\n" + show)
+        self.updateAvatars()
+
+    def updateAvatars(self):
+        for i in range(10):
+            name = self.dialogues[str(i + 1)]["name"]
+            self.pixmaps[0][i] = self.load_photo(self.dialogues[str(i + 1)]["photo"], self.uiDialogues[i][3])
+            self.pixmaps[1][i] = QPixmap.fromImage(self.pixmaps[0][i])
+            if name != "":
+                self.uiDialogues[i][3].setPixmap(self.pixmaps[1][i])
+            else:
+                self.uiDialogues[i][3].clear()
 
     def logOut(self):
         global SEND_GET_REQUESTS
