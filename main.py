@@ -242,12 +242,25 @@ def dialogue(id):
         return json.dumps(response)
     else:
         action = request.form['action']
+        user_id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
+        receiver_id = request.form['receiver']
         if action == "text":
             message = request.form['message'].strip("\n").replace("'", "''")
-            user_id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
-            receiver_id = request.form['receiver']
             dialManager.sendMessage(id, user_id, receiver_id, message)
             return "Message sent!"
+        if action == "video":
+            file = request.files['file']
+            dialManager.sendVideo(id, user_id, receiver_id, file)
+            return "Video sent!"
+        if action == "photo":
+            file = request.files['file']
+            dialManager.sendPhoto(id, user_id, receiver_id, file)
+            return "Photo sent!"
+        if action == "audio":
+            file = request.files['file']
+            dialManager.sendAudio(id, user_id, receiver_id, file)
+            return "Audio sent!"
+
 
 
 @app.route("/main/dialogues")
@@ -294,8 +307,10 @@ def dialogues():
 
 @app.route("/main/search")
 def search():
+    if not check_login(request.remote_addr):
+        return redirect("/")
     txt = request.args.get('txt', "")
-    id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
+    id = database.execute(f"SELECT id, name FROM users WHERE ip = '{request.remote_addr}'").first()[0]
     if txt == "":
         return json.dumps({"id": id})
     if txt.isdigit():

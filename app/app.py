@@ -1,4 +1,5 @@
 import sys
+import os
 
 import requests
 from PIL import Image
@@ -8,7 +9,7 @@ import time
 from PyQt5 import uic
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QThread
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QStackedWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QStackedWidget, QFileDialog
 
 SERVER_ADDRESS = "127.0.0.1:9999"
 SEND_GET_REQUESTS = False
@@ -88,9 +89,9 @@ class Main(QWidget):
         self.messages.hide()
         self.message_input.hide()
         self.button_file.hide()
-        self.button_block.hide()
         self.button_log_out.clicked.connect(self.logOut)
         self.search.editingFinished.connect(self.search_fun)
+        self.button_file.clicked.connect(self.send_file)
 
         for b in self.dialogue_buttons.buttons():
             b.clicked.connect(self.openDialogue)
@@ -155,6 +156,37 @@ class Main(QWidget):
             users = requests.get("http://" + SERVER_ADDRESS + "/main/search", params=params).json()
             self.updateData(users, load_photo=True)
 
+    def send_file(self):
+        fname = QFileDialog.getOpenFileName(self, 'Choose a file', '',
+                                            'Image (*.jpg);;Image (*.png);;'
+                                            ' Image (*.bmp);;Audio (*.mp3);;Video (*.mp4)')[0]
+        if os.path.exists(fname):
+            size = os.stat(fname).st_size / (1024 * 1024)
+            if size > 200:
+                return False
+            type = fname.split(".")[-1]
+            action = None
+            if type in ["jpg", "png", "bmp"]:
+                action = "photo"
+            elif type == "mp3":
+                action = "audio"
+            elif type == "mp4":
+                action = "video"
+            if action is None:
+                return False
+
+            file = open(fname, "rb")
+            data = {
+                "action": action,
+                "receiver": self.dialogues[str(self.delta_down + self.active_dialogue)]["photo"]
+            }
+            files = {
+                "file": file
+            }
+
+            requests.post("http://" + SERVER_ADDRESS + f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}",
+                          data=data, files=files, stream=True)
+
     def keyPressEvent(self, event):
         if int(event.modifiers()) == Qt.CTRL:
             if event.key() == Qt.Key_Return and self.message_input.toPlainText().replace(" ", "").replace("\t",
@@ -189,21 +221,22 @@ class Main(QWidget):
                 show += "You: "
             else:
                 show += f"{self.uiDialogues[self.active_dialogue - 1 - self.delta_down][1].text().split(' ')[0]}: "
-            show += msg["text"]
+            if msg['type'] == "text":
+                show += msg["text"]
+            elif msg['type'] == "video":
+                show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[self.active_dialogue]['id']}\">Video</a>"
             text = text + "\n" + show
         self.messages.setText(text)
 
     def openDialogue(self, id=-1):
         global SEND_GET_REQUESTS
-        if id == -1:
-            id = int(self.sender().objectName().split("_")[1])
+        id = int(self.sender().objectName().split("_")[1])
         if id == self.active_dialogue or self.uiDialogues[self.delta_down + id - 1][1].text() == "":
             return
         self.search.setText("🔎 Enter name or id")
         self.messages.show()
         self.message_input.show()
         self.button_file.show()
-        self.button_block.show()
         self.messages.setText("")
 
         self.active_dialogue = self.delta_down + id

@@ -54,6 +54,9 @@ border-top: 2px solid #DCDCDC;</string>
    <property name="text">
     <string>Last Message</string>
    </property>
+   <property name="openExternalLinks">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QLabel" name="name_1">
    <property name="enabled">
@@ -812,23 +815,6 @@ border-top: 2px solid #DCDCDC;</string>
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="button_block">
-   <property name="geometry">
-    <rect>
-     <x>1240</x>
-     <y>780</y>
-     <width>101</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(170, 0, 0);
-font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
-   </property>
-   <property name="text">
-    <string>Block user</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="your_id">
    <property name="geometry">
     <rect>
@@ -1178,10 +1164,16 @@ background-color: rgb(79, 239, 239);</string>
     <string/>
    </property>
    <property name="textFormat">
-    <enum>Qt::PlainText</enum>
+    <enum>Qt::AutoText</enum>
    </property>
    <property name="scaledContents">
     <bool>false</bool>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+   <property name="textInteractionFlags">
+    <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
    </property>
   </widget>
   <widget class="QPushButton" name="button_log_out">
@@ -1272,7 +1264,6 @@ background-color: rgb(79, 239, 239);</string>
   <zorder>button_file</zorder>
   <zorder>current_user</zorder>
   <zorder>current_user_photo</zorder>
-  <zorder>button_block</zorder>
   <zorder>your_id</zorder>
   <zorder>last_message_2</zorder>
   <zorder>name_2</zorder>

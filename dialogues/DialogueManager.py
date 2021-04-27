@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Text, Boolean, MetaData, Column, Time
+import os
 
 
 class DialogueManager:
@@ -9,9 +9,9 @@ class DialogueManager:
         self.database.execute(f"INSERT INTO dialogues (users, last_message, last_message_time, blocked)"
                               f" VALUES('{str(id1)};{str(id2)}', '', datetime('now', 'localtime'), 0)")
         id = self.database.execute(f"SELECT id FROM dialogues WHERE users = '{str(id1)};{str(id2)}'").first()[0]
-        self.database.execute(f"CREATE TABLE if not exists dial_{id} (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER,"
-                              " time TEXT, type TEXT, message TEXT, new BOOLEAN)")
-
+        self.database.execute(
+            f"CREATE TABLE if not exists dial_{id} (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER,"
+            " time TEXT, type TEXT, message TEXT, new BOOLEAN)")
 
     def getMessages(self, dial_id, amount=-1):
         result = self.database.execute(f"SELECT * FROM dial_{dial_id}").fetchall()
@@ -33,11 +33,50 @@ class DialogueManager:
         self.database.execute(f"UPDATE dialogues SET last_message"
                               f" = '{message}' WHERE id = {dial_id}")
 
-    def sendVideo(self, dial_id, sender_id, receiver_id, path):
-        pass
+    def sendVideo(self, dial_id, sender_id, receiver_id, file):
+        result = self.database.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name = 'dial_{dial_id}'")
+        if not result.first():
+            self.createNew(sender_id, receiver_id)
+            dial_id = self.database.execute(f"SELECT id FROM dialogues WHERE users ="
+                                            f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
+            self.sendVideo(dial_id, sender_id, receiver_id, file)
+        last_id = self.database.execute(f"SELECT id FROM dial_{dial_id} ORDER BY id DESC").first()[0]
+        file.save(os.getcwd() + f"\\static\\files\\{dial_id}_{last_id + 1}.mp4")
+        self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
+                              f" datetime('now', 'localtime'), 'video', '{last_id}', 1)")
+        self.database.execute(f"UPDATE dialogues SET last_message_time"
+                              f" = datetime('now', 'localtime') WHERE id = {dial_id}")
+        self.database.execute(f"UPDATE dialogues SET last_message"
+                              f" = 'Video' WHERE id = {dial_id}")
 
-    def sendPhoto(self, dial_id, sender_id, receiver_id, path):
-        pass
+    def sendPhoto(self, dial_id, sender_id, receiver_id, file):
+        result = self.database.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name = 'dial_{dial_id}'")
+        if not result.first():
+            self.createNew(sender_id, receiver_id)
+            dial_id = self.database.execute(f"SELECT id FROM dialogues WHERE users ="
+                                            f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
+            self.sendPhoto(dial_id, sender_id, receiver_id, file)
+        last_id = self.database.execute(f"SELECT id FROM dial_{dial_id} ORDER BY id DESC").first()[0]
+        file.save(os.getcwd() + f"\\static\\files\\{dial_id}_{last_id + 1}.jpg")
+        self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
+                              f" datetime('now', 'localtime'), 'photo', '{last_id}', 1)")
+        self.database.execute(f"UPDATE dialogues SET last_message_time"
+                              f" = datetime('now', 'localtime') WHERE id = {dial_id}")
+        self.database.execute(f"UPDATE dialogues SET last_message"
+                              f" = 'Photo' WHERE id = {dial_id}")
 
-    def sendAudio(self, dial_id, sender_id, receiver_id, path):
-        pass
+    def sendAudio(self, dial_id, sender_id, receiver_id, file):
+        result = self.database.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name = 'dial_{dial_id}'")
+        if not result.first():
+            self.createNew(sender_id, receiver_id)
+            dial_id = self.database.execute(f"SELECT id FROM dialogues WHERE users ="
+                                            f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
+            self.sendAudio(dial_id, sender_id, receiver_id, file)
+        last_id = self.database.execute(f"SELECT id FROM dial_{dial_id} ORDER BY id DESC").first()[0]
+        file.save(os.getcwd() + f"\\static\\files\\{dial_id}_{last_id + 1}.mp3")
+        self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
+                              f" datetime('now', 'localtime'), 'audio', '{last_id}', 1)")
+        self.database.execute(f"UPDATE dialogues SET last_message_time"
+                              f" = datetime('now', 'localtime') WHERE id = {dial_id}")
+        self.database.execute(f"UPDATE dialogues SET last_message"
+                              f" = 'Audio' WHERE id = {dial_id}")
