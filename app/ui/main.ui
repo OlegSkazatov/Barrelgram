@@ -51,6 +51,9 @@ border-top: 2px solid #DCDCDC;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string>Last Message</string>
    </property>
@@ -77,7 +80,7 @@ border-top: 2px solid #DCDCDC;</string>
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">opacity: 1;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);opacity: 1;
 font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="frameShadow">
@@ -100,7 +103,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -118,6 +121,9 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string>Last Message</string>
    </property>
@@ -132,7 +138,7 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -192,7 +198,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -206,6 +212,9 @@ background-color: rgba(255, 255, 255, 0);</string>
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -221,7 +230,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -261,7 +270,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -275,6 +284,9 @@ background-color: rgba(255, 255, 255, 0);</string>
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -290,7 +302,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -330,7 +342,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -344,6 +356,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -359,7 +374,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -399,7 +414,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -413,6 +428,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -428,7 +446,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -468,7 +486,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -482,6 +500,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -497,7 +518,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -538,7 +559,7 @@ border-top: 2px solid #DCDCDC;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -552,6 +573,9 @@ border-top: 2px solid #DCDCDC;
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -567,7 +591,7 @@ border-top: 2px solid #DCDCDC;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -609,7 +633,7 @@ border-top: 2px solid #DCDCDC;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -623,6 +647,9 @@ border-top: 2px solid #DCDCDC;
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -638,7 +665,7 @@ border-top: 2px solid #DCDCDC;
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -678,7 +705,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+    <string notr="true">background-color: rgba(255, 255, 255, 0);font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Name Surname&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -692,6 +719,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>111</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string>Last Message</string>
@@ -707,7 +737,7 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 25px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 25px;
 
   min-height: 20px;
   min-width: 20px;
@@ -837,6 +867,9 @@ border-top: 2px solid #DCDCDC;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -849,6 +882,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>31</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -863,6 +899,9 @@ border-top: 2px solid #DCDCDC;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -875,6 +914,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>31</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -889,6 +931,9 @@ border-top: 2px solid #DCDCDC;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -901,6 +946,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>31</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -915,6 +963,9 @@ border-top: 2px solid #DCDCDC;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -927,6 +978,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>31</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -941,6 +995,9 @@ border-top: 2px solid #DCDCDC;</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -953,6 +1010,9 @@ border-top: 2px solid #DCDCDC;</string>
      <width>31</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -968,13 +1028,16 @@ border-top: 2px solid #DCDCDC;</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_2">
@@ -987,13 +1050,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_3">
@@ -1006,13 +1072,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_4">
@@ -1025,13 +1094,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_5">
@@ -1044,13 +1116,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_6">
@@ -1063,13 +1138,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_7">
@@ -1082,13 +1160,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_8">
@@ -1101,13 +1182,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_9">
@@ -1120,13 +1204,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="new_messages_10">
@@ -1139,41 +1226,16 @@ background-color: rgb(79, 239, 239);</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-radius: 10px;
+    <string notr="true">background-color: rgba(255, 255, 255, 0);border-radius: 10px;
   min-height: 20px;
   min-width: 20px;
-background-color: rgb(79, 239, 239);</string>
+background-color: rgb(255, 136, 0);</string>
    </property>
    <property name="text">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
-  </widget>
-  <widget class="QLabel" name="messages">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>-180</y>
-     <width>801</width>
-     <height>941</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="textFormat">
-    <enum>Qt::AutoText</enum>
-   </property>
-   <property name="scaledContents">
-    <bool>false</bool>
-   </property>
-   <property name="openExternalLinks">
-    <bool>true</bool>
-   </property>
-   <property name="textInteractionFlags">
-    <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="button_log_out">
@@ -1213,6 +1275,7 @@ background-color: rgb(79, 239, 239);</string>
    </property>
    <property name="styleSheet">
     <string notr="true">border-radius: 25px;
+background-color: rgba(255, 255, 255, 0);
 
   min-height: 20px;
   min-width: 20px;
@@ -1220,6 +1283,358 @@ background-color: rgb(79, 239, 239);</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_1">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>130</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>160</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_3">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>190</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_4">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>220</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_5">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>250</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_6">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>280</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_7">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>310</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_8">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>340</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_9">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>370</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_10">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>400</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_11">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>430</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_12">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>460</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_13">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>490</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_14">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>520</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_15">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>550</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="line_16">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>580</y>
+     <width>731</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::AutoText</enum>
+   </property>
+   <property name="openExternalLinks">
+    <bool>true</bool>
    </property>
   </widget>
   <zorder>dial_1</zorder>
@@ -1288,10 +1703,25 @@ background-color: rgb(79, 239, 239);</string>
   <zorder>new_messages_8</zorder>
   <zorder>new_messages_9</zorder>
   <zorder>new_messages_10</zorder>
-  <zorder>messages</zorder>
   <zorder>button_log_out</zorder>
   <zorder>button_support</zorder>
   <zorder>photo_1</zorder>
+  <zorder>line_1</zorder>
+  <zorder>line_2</zorder>
+  <zorder>line_3</zorder>
+  <zorder>line_4</zorder>
+  <zorder>line_5</zorder>
+  <zorder>line_6</zorder>
+  <zorder>line_7</zorder>
+  <zorder>line_8</zorder>
+  <zorder>line_9</zorder>
+  <zorder>line_10</zorder>
+  <zorder>line_11</zorder>
+  <zorder>line_12</zorder>
+  <zorder>line_13</zorder>
+  <zorder>line_14</zorder>
+  <zorder>line_15</zorder>
+  <zorder>line_16</zorder>
  </widget>
  <resources/>
  <connections/>

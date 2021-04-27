@@ -25,11 +25,11 @@ class Login(QMainWindow):
         self.stack = QStackedWidget()
         self.stack.addWidget(self)
         self.stack.setCurrentWidget(self)
-        self.main = Main()
+        self.requestThread = RequestThread()
+        self.main = Main(self.requestThread)
         self.stack.addWidget(self.main)
         self.stack.setGeometry(self.geometry())
         self.stack.show()
-        self.requestThread = RequestThread()
         self.requestThread.start()
         self.button_login.clicked.connect(self.login)
 
@@ -59,17 +59,25 @@ class Login(QMainWindow):
 
 
 class Main(QWidget):
-    def __init__(self):
+    def __init__(self, requestThread):
         super().__init__()
-        self.initUI()
         self.dialogues = {}
         self.active_dialogue = None
         self.delta_down = 0
         self.searching = False
+        self.requestThread = requestThread
+        self.buttonThread = ButtonThread()
+        self.buttonThread.start()
+        self.buttonThread.triggered.connect(self.light_active_dialogue)
+        self.initUI()
+        self.dial_text = ""
 
     def initUI(self):
         uic.loadUi('ui/main.ui', self)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
+        self.uiMessages = [self.line_1, self.line_2, self.line_3, self.line_4, self.line_5,
+                           self.line_6, self.line_7, self.line_8, self.line_9, self.line_10,
+                           self.line_11, self.line_12, self.line_13, self.line_14, self.line_15, self.line_16]
         # Здесь хранятся ссылки на ui объекты кнопок с диалогами, чтобы их было удобнее доставать потом
         self.uiDialogues = (
             (self.dial_1, self.name_1, self.last_message_1, self.photo_1, self.new_messages_1, self.time_1),
@@ -86,15 +94,32 @@ class Main(QWidget):
         self.my_pixmap = None  # Иначе картинки начинают творить что-то страшное
         # Поэтому в эти аттрибуты записываются все ImageQt и QPixmap
         self.pixmaps = [['' for i in range(10)], ['' for i in range(10)]]
-        self.messages.hide()
         self.message_input.hide()
         self.button_file.hide()
         self.button_log_out.clicked.connect(self.logOut)
+        self.button_support.clicked.connect(self.support)
         self.search.editingFinished.connect(self.search_fun)
         self.button_file.clicked.connect(self.send_file)
+        self.requestThread.response_got.connect(self.handleResponse)
 
         for b in self.dialogue_buttons.buttons():
             b.clicked.connect(self.openDialogue)
+
+    def handleResponse(self, jsonfile):
+        self.updateData(jsonfile, load_photo=False)
+        self.updateActiveDialogue()
+
+    def light_active_dialogue(self):
+        if self.active_dialogue is None:
+            for el in self.uiDialogues:
+                el[0].setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 0);")
+        else:
+            self.uiDialogues[self.active_dialogue - 1][0]\
+                .setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 120);")
+
+    def support(self):
+        self.search.setText("1")
+        self.search_fun()
 
     def updateData(self, jsonfile, load_photo=False):
         my_id = jsonfile["id"]
@@ -108,12 +133,10 @@ class Main(QWidget):
             for i in range(1, 11):
                 if i > self.dialogues["amount"]:
                     for el in self.uiDialogues[i - 1]:
-                        pass
-                #                        el.hide()
+                        el.hide()
                 else:
                     for el in self.uiDialogues[i - 1]:
-                        pass
-        #                       el.show()
+                        el.show()
         for i in range(10):
             name = self.dialogues[str(i + 1)]["name"]
             last_message = self.dialogues[str(i + 1)]["last_message"]
@@ -142,14 +165,15 @@ class Main(QWidget):
         self.current_user.setText(my_name)
 
     def search_fun(self):
-        if "🔎" in self.search.text():
+        if "🔎" in self.search.text() or self.search.text() == "":
             self.search.setText("🔎 Enter name or id")
         else:
             global SEND_GET_REQUESTS
             SEND_GET_REQUESTS = False
             self.searching = True
             self.active_dialogue = None
-            self.messages.clear()
+            for el in self.uiMessages:
+                el.clear()
             params = {
                 "txt": self.search.text()
             }
@@ -157,6 +181,8 @@ class Main(QWidget):
             self.updateData(users, load_photo=True)
 
     def send_file(self):
+        if self.active_dialogue is None:
+            return
         fname = QFileDialog.getOpenFileName(self, 'Choose a file', '',
                                             'Image (*.jpg);;Image (*.png);;'
                                             ' Image (*.bmp);;Audio (*.mp3);;Video (*.mp4)')[0]
@@ -184,8 +210,9 @@ class Main(QWidget):
                 "file": file
             }
 
-            requests.post("http://" + SERVER_ADDRESS + f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}",
-                          data=data, files=files, stream=True)
+            requests.post(
+                "http://" + SERVER_ADDRESS + f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}",
+                data=data, files=files, stream=True)
 
     def keyPressEvent(self, event):
         if int(event.modifiers()) == Qt.CTRL:
@@ -193,7 +220,20 @@ class Main(QWidget):
                                                                                                           "") != "":
                 self.send_message(self.message_input.toPlainText())
 
+    def wheelEvent(self, event):
+        if self.active_dialogue is None:
+            return
+
+        if event.angleDelta().y() > 0:
+            if self.delta_down < len(self.dial_text) - 16:
+                self.delta_down += 1
+        elif event.angleDelta().y() < 0:
+            if self.delta_down > 0:
+                self.delta_down -= 1
+
     def send_message(self, message):
+        if self.active_dialogue is None:
+            return
         id_1 = self.active_dialogue
         data = {
             "action": "text",
@@ -220,28 +260,30 @@ class Main(QWidget):
             if msg["user"] == my_id:
                 show += "You: "
             else:
-                show += f"{self.uiDialogues[self.active_dialogue - 1 - self.delta_down][1].text().split(' ')[0]}: "
+                show += f"{self.uiDialogues[self.active_dialogue - 1][1].text().split(' ')[0]}: "
             if msg['type'] == "text":
                 show += msg["text"]
             elif msg['type'] == "video":
-                show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[self.active_dialogue]['id']}\">Video</a>"
+                show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}/video/{msg['text']}\">Video</a>"
+            elif msg['type'] == "photo":
+                show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}/photo/{msg['text']}\">Photo</a>"
+            elif msg['type'] == "audio":
+                show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}/audio/{msg['text']}\">Audio</a>"
             text = text + "\n" + show
-        self.messages.setText(text)
+        self.setMessages(text)
 
-    def openDialogue(self, id=-1):
+    def openDialogue(self):
         global SEND_GET_REQUESTS
         id = int(self.sender().objectName().split("_")[1])
         if id == self.active_dialogue or self.uiDialogues[self.delta_down + id - 1][1].text() == "":
             return
         self.search.setText("🔎 Enter name or id")
-        self.messages.show()
         self.message_input.show()
         self.button_file.show()
-        self.messages.setText("")
 
-        self.active_dialogue = self.delta_down + id
+        self.active_dialogue = id
         params = {
-            "receiver": int(self.dialogues[str(self.delta_down + id)]["photo"])
+            "receiver": int(self.dialogues[str(id)]["photo"])
         }
         msgs = requests.get("http://" + SERVER_ADDRESS +
                             f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}", params=params).json()
@@ -251,6 +293,7 @@ class Main(QWidget):
             SEND_GET_REQUESTS = True
         my_id = int(self.your_id.text().split(" ")[2])
         # Отображение сообщений
+        text = ""
         for key in msgs.keys():
             msg = msgs[key]
             show = ""
@@ -259,8 +302,33 @@ class Main(QWidget):
             else:
                 show += f"{self.uiDialogues[id - 1][1].text().split(' ')[0]}: "
             show += msg["text"]
-            self.messages.setText(self.messages.text() + "\n" + show)
+            text = text + "\n" + show
+        self.setMessages(text, scroll_to_end=True)
         self.updateAvatars()
+
+    def setMessages(self, text, scroll_to_end=False):
+        text = text.strip("\n")
+        text = text.split("\n")
+        text = list(map(lambda x: [x[i:i + 60] if "<a href" not in x else x for i in range(0, len(x), 60)], text))
+        text = list(map(lambda x: "\n".join(x), text))
+        true_text = []
+        for el in text:
+            if "\n" not in el:
+                true_text.append(el)
+            else:
+                for e in el.split("\n"):
+                    true_text.append(e)
+
+        if scroll_to_end:
+            self.delta_down = len(true_text) - 16
+            if self.delta_down < 0:
+                self.delta_down = 0
+        for i in range(16):
+            try:
+                self.uiMessages[i].setText(true_text[self.delta_down + i])
+            except IndexError:
+                break
+        self.dial_text = true_text
 
     def updateAvatars(self):
         for i in range(10):
@@ -287,7 +355,9 @@ class Main(QWidget):
         return ImageQt(im.copy())
 
 
-class RequestThread(QThread):
+class RequestThread(QThread):  # Поток, делающий get запрос к серверу каждые полсекунды для обновления диалогов
+    response_got = QtCore.pyqtSignal(dict)
+
     def __init__(self):
         QtCore.QThread.__init__(self)
 
@@ -295,9 +365,21 @@ class RequestThread(QThread):
         while True:
             if SEND_GET_REQUESTS:
                 response = requests.get("http://" + SERVER_ADDRESS + "/main/dialogues").json()
-                main.stack.currentWidget().updateData(response, load_photo=False)
-                main.stack.currentWidget().updateActiveDialogue()
-            time.sleep(1)
+                self.response_got.emit(response)
+            time.sleep(0.5)
+
+
+class ButtonThread(QThread):  # Поток, подсвечивающий отдельный диалог. Было лень делать по другому
+
+    triggered = QtCore.pyqtSignal()
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+
+    def run(self):
+        while True:
+            self.triggered.emit()
+            time.sleep(0.01)
 
 
 def except_hook(cls, exception, traceback):

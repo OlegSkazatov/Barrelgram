@@ -262,6 +262,25 @@ def dialogue(id):
             return "Audio sent!"
 
 
+@app.route('/main/dialogue/<id>/<type>/<key>')
+def get_file(id, type, key):
+    ext = ""
+    if type == "video":
+        ext = ".mp4"
+    elif type == "audio":
+        ext = ".mp3"
+    elif type == "photo":
+        ext = ".jpg"
+
+    if ext == "":
+        return "File not found!"
+    path = os.getcwd() + f"\\static\\files\\{type}\\{id}_{key}{ext}"
+    print(path)
+    try:
+        return send_file(path)
+    except FileNotFoundError:
+        return "File not found!"
+
 
 @app.route("/main/dialogues")
 def dialogues():
@@ -284,7 +303,8 @@ def dialogues():
             name = " ".join(user[5].split(";"))
             last_message = dialogues[i][2]
             photo = int(users[0])
-            result = [el for el in database.execute(f"SELECT * FROM dial_{id1} WHERE new = 1 AND user != {id}").fetchall()]
+            result = [el for el in
+                      database.execute(f"SELECT * FROM dial_{id1} WHERE new = 1 AND user != {id}").fetchall()]
             new_messages = len(result)
             result = [el for el in database.execute(f"SELECT * FROM dial_{id1}").fetchall()]
             new = False
@@ -310,20 +330,19 @@ def search():
     if not check_login(request.remote_addr):
         return redirect("/")
     txt = request.args.get('txt', "")
-    id = database.execute(f"SELECT id, name FROM users WHERE ip = '{request.remote_addr}'").first()[0]
-    if txt == "":
-        return json.dumps({"id": id})
+    result = database.execute(f"SELECT id, name FROM users WHERE ip = '{request.remote_addr}'").first()
+    id = result[0]
+    name = " ".join(result[1].split(";"))
     if txt.isdigit():
         result = database.execute(f"SELECT * FROM users WHERE id = {txt}")
     else:
         result = database.execute(f"SELECT * FROM users WHERE name LIKE '%{';'.join(txt.split(' '))}%'")
     users = [el for el in result.fetchall()]
-    if len(users) == 0:
-        return json.dumps({"id": id})
     with open('responses/main_page.json', encoding='utf-8') as res:
         dct = json.load(res)
         id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
         dct["id"] = id
+        dct["name"] = name
         dct["dialogues"]["amount"] = len(users)
         for i in range(len(users)):
             user_id = users[i][0]
@@ -334,7 +353,6 @@ def search():
             dct["dialogues"][str(i + 1)]["name"] = name
             dct["dialogues"][str(i + 1)]["photo"] = user_id
         response = json.dumps(dct)
-        print(dct)
         return response
 
 

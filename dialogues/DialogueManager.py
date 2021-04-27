@@ -41,9 +41,9 @@ class DialogueManager:
                                             f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
             self.sendVideo(dial_id, sender_id, receiver_id, file)
         last_id = self.database.execute(f"SELECT id FROM dial_{dial_id} ORDER BY id DESC").first()[0]
-        file.save(os.getcwd() + f"\\static\\files\\{dial_id}_{last_id + 1}.mp4")
+        file.save(os.getcwd() + f"\\static\\files\\video\\{dial_id}_{last_id + 1}.mp4")
         self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
-                              f" datetime('now', 'localtime'), 'video', '{last_id}', 1)")
+                              f" datetime('now', 'localtime'), 'video', '{last_id + 1}', 1)")
         self.database.execute(f"UPDATE dialogues SET last_message_time"
                               f" = datetime('now', 'localtime') WHERE id = {dial_id}")
         self.database.execute(f"UPDATE dialogues SET last_message"
@@ -57,9 +57,9 @@ class DialogueManager:
                                             f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
             self.sendPhoto(dial_id, sender_id, receiver_id, file)
         last_id = self.database.execute(f"SELECT id FROM dial_{dial_id} ORDER BY id DESC").first()[0]
-        file.save(os.getcwd() + f"\\static\\files\\{dial_id}_{last_id + 1}.jpg")
+        file.save(os.getcwd() + f"\\static\\files\\photo\\{dial_id}_{last_id + 1}.jpg")
         self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
-                              f" datetime('now', 'localtime'), 'photo', '{last_id}', 1)")
+                              f" datetime('now', 'localtime'), 'photo', '{last_id + 1}', 1)")
         self.database.execute(f"UPDATE dialogues SET last_message_time"
                               f" = datetime('now', 'localtime') WHERE id = {dial_id}")
         self.database.execute(f"UPDATE dialogues SET last_message"
@@ -73,9 +73,9 @@ class DialogueManager:
                                             f" '{str(sender_id)};{str(receiver_id)}'").first()[0]
             self.sendAudio(dial_id, sender_id, receiver_id, file)
         last_id = self.database.execute(f"SELECT id FROM dial_{dial_id} ORDER BY id DESC").first()[0]
-        file.save(os.getcwd() + f"\\static\\files\\{dial_id}_{last_id + 1}.mp3")
+        file.save(os.getcwd() + f"\\static\\files\\audio\\{dial_id}_{last_id + 1}.mp3")
         self.database.execute(f"INSERT INTO dial_{dial_id} (user, time, type, message, new) VALUES({sender_id},"
-                              f" datetime('now', 'localtime'), 'audio', '{last_id}', 1)")
+                              f" datetime('now', 'localtime'), 'audio', '{last_id + 1}', 1)")
         self.database.execute(f"UPDATE dialogues SET last_message_time"
                               f" = datetime('now', 'localtime') WHERE id = {dial_id}")
         self.database.execute(f"UPDATE dialogues SET last_message"
