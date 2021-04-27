@@ -3,7 +3,8 @@ import sqlite3
 import random
 import json
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash, send_file
+from werkzeug.utils import secure_filename
 
 from email_authorize.EmailManager import EmailManager
 from dialogues.DialogueManager import DialogueManager
@@ -21,8 +22,11 @@ database = Database("database.db")  # Создаём объект для раб�
 dialManager = DialogueManager(database)  # Обработчик диалогов
 table_init(database)  # Создаём главные таблицы если их нет
 
+UPLOAD_FOLDER = os.getcwd() + '\\static\\all_avatars\\'
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
@@ -69,7 +73,7 @@ def check_login(address):
 
 
 def getUserInfo(id):
-    result = database.execute(f"SELECT * FROM users WHERE id = {str(id)}")
+    result = database.execute(f"SELECT * FROM users WHERE id = {id}")
     return result.first()
 
 
@@ -79,7 +83,7 @@ def menu():
     if not app_client:
         result = database.execute(f"SELECT email FROM users WHERE ip = '{request.remote_addr}'")
         if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
-            return redirect("/main")
+            return redirect('/download')
         if request.method == 'GET' and not app_client:
             return render_template('menu.html', problem=0)
         else:
@@ -95,7 +99,7 @@ def reg():
     ip = request.remote_addr
     result = database.execute(f"SELECT email FROM users WHERE ip = '{ip}'")
     if result.first() is not None:
-        return redirect("/main")
+        return redirect("/download")
     if request.method == 'GET':
         return render_template("reg.html", password=0)
     else:
@@ -156,7 +160,7 @@ def settings():
             f"UPDATE users SET birthday = '{request.form['day'] + ';' + request.form['month'] + ';' + request.form['year']}' WHERE email = '{user_email}'")
         database.execute(
             f"UPDATE users SET sex = '{request.form['sex']}' WHERE email = '{user_email}'")
-        return redirect('/main')
+        return redirect('/avatar')
 
 
 @app.route('/main')
@@ -165,15 +169,14 @@ def main():
         return redirect("/")
     app_client = request.args.get('app_client', False) == "True"  # Проверка заходит клиент с приложения или сайта
     if not app_client:
-        return render_template('main.html',
-                               ava_name='https://get.pxhere.com/photo/landscape-nature-wilderness-walking-mountain-sky-lake-adventure-view-river-valley-mountain-range-environment-rural-reflection-scenic-peaceful-glacier-scenery-serene-fjord-tourism-national-park-ridge-ecology-clouds-mountains-alps-backpacking-plateau-fell-cirque-loch-crater-lake-moraine-landform-tarn-mountain-pass-geographical-feature-mountainous-landforms-glacial-landform-848203.jpg')
+        return redirect('/avatar')
     with open('responses/main_page.json', encoding='utf-8') as res:
         dct = json.load(res)
         id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
         dct["id"] = id
+        dct["name"] = " ".join(getUserInfo(id)[5].split(";"))
         dialogues = [el for el in database.execute(
-            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY date(last_message_time) DESC").fetchall()]
-        print(dialogues)
+            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY last_message_time DESC").fetchall()]
         dct["dialogues"]["amount"] = len(dialogues)
         for i in range(len(dialogues)):
             users = dialogues[i][1].split(";")
@@ -189,7 +192,10 @@ def main():
             new_messages = len(result)
             result = [el for el in database.execute(f"SELECT * FROM dial_{id1}").fetchall()]
             new = len(result) == new_messages
-            last_message_time = ":".join(dialManager.getMessages(id1, amount=1)[0][2].split(" ")[1].split(":")[:2])
+            try:
+                last_message_time = ":".join(dialManager.getMessages(id1, amount=1)[0][2].split(" ")[1].split(":")[:2])
+            except IndexError:
+                last_message_time = ""
             result.clear()
 
             dct["dialogues"][str(i + 1)]["id"] = id1
@@ -209,8 +215,15 @@ def dialogue(id):
         return redirect("/")
     if request.method == 'GET':
         user_id = database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0]
-        database.execute(f"UPDATE dial_{id} SET new = 0 WHERE user != {user_id}")
-        messages = dialManager.getMessages(id, 20)
+        true_id = int(id)
+        if id == "0":
+            receiver = request.args.get("receiver", 0)
+            if receiver == 0:
+                return json.dumps({})
+            dialManager.createNew(user_id, receiver)
+            true_id = database.execute(f"SELECT id FROM dialogues WHERE users = '{user_id};{receiver}'").first()[0]
+        database.execute(f"UPDATE dial_{true_id} SET new = 0 WHERE user != {user_id}")
+        messages = dialManager.getMessages(true_id, 20)
         response = {}
         for message in messages:
             id = message[0]
@@ -237,7 +250,6 @@ def dialogue(id):
             return "Message sent!"
 
 
-
 @app.route("/main/dialogues")
 def dialogues():
     if not check_login(request.remote_addr):
@@ -246,8 +258,9 @@ def dialogues():
         dct = json.load(res)
         id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
         dct["id"] = id
+        dct["name"] = " ".join(getUserInfo(id)[5].split(";"))
         dialogues = [el for el in database.execute(
-            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY date(last_message_time) DESC").fetchall()]
+            f"SELECT * FROM dialogues WHERE users LIKE '%{id}%' ORDER BY last_message_time DESC").fetchall()]
         dct["dialogues"]["amount"] = len(dialogues)
         for i in range(len(dialogues)):
             users = dialogues[i][1].split(";")
@@ -261,8 +274,11 @@ def dialogues():
             result = [el for el in database.execute(f"SELECT * FROM dial_{id1} WHERE new = 1 AND user != {id}").fetchall()]
             new_messages = len(result)
             result = [el for el in database.execute(f"SELECT * FROM dial_{id1}").fetchall()]
-            new = len(result) == new_messages
-            last_message_time = ":".join(dialManager.getMessages(id1, amount=1)[0][2].split(" ")[1].split(":")[:2])
+            new = False
+            try:
+                last_message_time = ":".join(dialManager.getMessages(id1, amount=1)[0][2].split(" ")[1].split(":")[:2])
+            except IndexError:
+                last_message_time = ""
             result.clear()
 
             dct["dialogues"][str(i + 1)]["id"] = id1
@@ -276,12 +292,82 @@ def dialogues():
         return response
 
 
+@app.route("/main/search")
+def search():
+    txt = request.args.get('txt', "")
+    if txt == "":
+        return json.dumps({})
+    if txt.isdigit():
+        result = database.execute(f"SELECT * FROM users WHERE id = {txt}")
+    else:
+        result = database.execute(f"SELECT * FROM users WHERE name LIKE '%{';'.join(txt.split(' '))}%'")
+    users = [el for el in result.fetchall()]
+    if len(users) == 0:
+        return json.dumps({})
+    with open('responses/main_page.json', encoding='utf-8') as res:
+        dct = json.load(res)
+        id = int(database.execute(f"SELECT id FROM users WHERE ip = '{request.remote_addr}'").first()[0])
+        dct["id"] = id
+        dct["dialogues"]["amount"] = len(users)
+        for i in range(len(users)):
+            user_id = users[i][0]
+            name = " ".join(users[i][5].split(";"))
+            new = True
+
+            dct["dialogues"][str(i + 1)]["new"] = new
+            dct["dialogues"][str(i + 1)]["name"] = name
+            dct["dialogues"][str(i + 1)]["photo"] = user_id
+        response = json.dumps(dct)
+        return response
+
+
 @app.route('/go_out')
 def go_out():
     ip = request.remote_addr
     database.execute(
         f"UPDATE users SET ip = '' WHERE ip = '{ip}'")
     return redirect('/')
+
+
+@app.route('/avatar', methods=['POST', 'GET'])
+def avatar():
+    ip = request.remote_addr
+    if request.method == 'GET':
+        return render_template('settings2.html')
+    else:
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['file']
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file:
+                user_id = str(database.execute(f"SELECT id FROM users WHERE ip = '{ip}'").first()[0])
+                file.save(app.config['UPLOAD_FOLDER'] + user_id)
+                return redirect(f'/all_avatars/{user_id}')
+
+
+@app.route('/all_avatars/<avatar_name>')
+def all_avatars(avatar_name):
+    try:
+        return send_file('static\\all_avatars\\' + avatar_name + ".jpg")
+    except FileNotFoundError:
+        return send_file('static\\all_avatars\\icon.jpg')
+
+
+@app.route('/download')
+def download():
+    return render_template('download.html')
+
+
+@app.route('/set_menu')
+def set_menu():
+    ip = request.remote_addr
+    user_id = str(database.execute(f"SELECT id FROM users WHERE ip = '{ip}'").first()[0]) + '.jpg'
+    user_data = database.execute(f"SELECT name FROM users WHERE ip = '{ip}'").first()[0]
+    return render_template('set_menu.html', file='all_avatars/' + user_id, name=user_data)
 
 
 if __name__ == '__main__':

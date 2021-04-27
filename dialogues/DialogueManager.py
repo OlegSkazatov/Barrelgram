@@ -6,16 +6,12 @@ class DialogueManager:
         self.database = database
 
     def createNew(self, id1, id2):
-        self.database.execute(f"INSERT INTO dialogues ('{str(id1)};{str(id2)}'), '', datetime('now', 'localtime'), 0")
+        self.database.execute(f"INSERT INTO dialogues (users, last_message, last_message_time, blocked)"
+                              f" VALUES('{str(id1)};{str(id2)}', '', datetime('now', 'localtime'), 0)")
         id = self.database.execute(f"SELECT id FROM dialogues WHERE users = '{str(id1)};{str(id2)}'").first()[0]
+        self.database.execute(f"CREATE TABLE if not exists dial_{id} (id INTEGER PRIMARY KEY AUTOINCREMENT, user INTEGER,"
+                              " time TEXT, type TEXT, message TEXT, new BOOLEAN)")
 
-        meta = MetaData()
-        self.database.createTable(f'dial_{id}', meta, Column("id", Integer, primary_key=True, autoincrement=True),
-                                  Column("user", Integer),
-                                  Column("time", Text),
-                                  Column("type", Text),
-                                  Column("message", Text),
-                                  Column("new"), Boolean)
 
     def getMessages(self, dial_id, amount=-1):
         result = self.database.execute(f"SELECT * FROM dial_{dial_id}").fetchall()
