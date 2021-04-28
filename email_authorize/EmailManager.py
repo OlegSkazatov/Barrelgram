@@ -25,6 +25,6 @@ class EmailManager:
             "To: %s" % email,
             "Subject: Confirm your email",
             "",
-            str(f"http://olay-messenger.xyz:25936/email_confirm/{email}/{kod}")  # Такое письмо по любому попадёт в спам
+            str(f"http://olay-messenger.xyz:25651/email_confirm/{email}/{kod}")  # Такое письмо по любому попадёт в спам
         ])
         self.smtpObj.sendmail(self.my_email, [email], message)
