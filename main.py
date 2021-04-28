@@ -393,7 +393,10 @@ def avatar():
 def all_avatars(avatar_name):
     if avatar_name == "":
         return send_file('static\\all_avatars\\icon.jpg')
-    return send_file('static\\all_avatars\\' + avatar_name + ".jpg")
+    try:
+        return send_file('static\\all_avatars\\' + avatar_name + ".jpg")
+    except FileNotFoundError:
+        return send_file('static\\all_avatars\\icon.jpg')
 
 
 @app.route('/download')
