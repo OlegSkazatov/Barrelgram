@@ -4,7 +4,6 @@ import random
 import json
 
 from flask import Flask, render_template, request, redirect, flash, send_file
-from werkzeug.utils import secure_filename
 
 from email_authorize.EmailManager import EmailManager
 from dialogues.DialogueManager import DialogueManager
@@ -20,9 +19,9 @@ conn.close()
 
 database = Database("database.db")  # Создаём объект для работы с БД
 dialManager = DialogueManager(database)  # Обработчик диалогов
-table_init(database)  # Создаём главные таблицы если их нет
+table_init(database)  # Создаём главные таблицы если их нет. О таблицах подробнее в Database/table_init
 
-UPLOAD_FOLDER = os.getcwd() + '\\static\\all_avatars\\'
+UPLOAD_FOLDER = os.getcwd() + '\\static\\all_avatars\\'  # Куда сохранять аватарки
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -30,7 +29,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
-def login_user(username, password, ip, request, app_client):
+def login_user(username, password, ip, request, app_client):  # Вход пользователя
     result = database.execute(f"SELECT email FROM users WHERE ip = '{ip}'")
     if result.first() is not None:  # Проверка, если уже выполнен вход с этого ip
         return redirect(f"/main?app_client={app_client}")
@@ -68,17 +67,18 @@ def login_user(username, password, ip, request, app_client):
 
 
 def check_login(address):
+    # Одновременно с одного ip только 1 аккаунт, это не косяк, всё так и задумано. Придумал не я
     result = database.execute(f"SELECT email FROM users WHERE ip = '{address}'")
     return bool(result.first())
 
 
-def getUserInfo(id):
+def getUserInfo(id):  # Получить информацию о пользователе по id
     result = database.execute(f"SELECT * FROM users WHERE id = {id}")
     return result.first()
 
 
 @app.route('/', methods=['POST', 'GET'])
-def menu():
+def menu():  # Главная страница
     app_client = request.args.get('app_client', False) == "True"  # Проверка заходит клиент с приложения или сайта
     if not app_client:
         result = database.execute(f"SELECT email FROM users WHERE ip = '{request.remote_addr}'")
@@ -96,7 +96,7 @@ def menu():
 
 
 @app.route('/reg', methods=['POST', 'GET'])
-def reg():
+def reg():  # Регистрация
     ip = request.remote_addr
     result = database.execute(f"SELECT email FROM users WHERE ip = '{ip}'")
     if result.first() is not None:
@@ -111,8 +111,6 @@ def reg():
             return render_template("reg.html", messenge='Пароли не совпадают')
         elif len(request.form['password']) < 8:
             return render_template("reg.html", messenge='Слишком короткий пароль!')
-        password = str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + request.form[
-            'password']
         database.execute(
             "INSERT INTO users (email, ip, password, confirmed, name, birthday, sex) VALUES ('{}', '{}', '{}', {}, '{}', '{}', '{}')".format(
                 str(request.form['email']), '',
@@ -121,7 +119,7 @@ def reg():
         return redirect(f"/email_accept/{request.form['email']}")
 
 
-@app.route('/email_accept/<email>', methods=['POST', 'GET'])
+@app.route('/email_accept/<email>', methods=['POST', 'GET'])  # Отправка письма с подтверждением
 def email(email):
     if request.method == 'GET':
         return render_template("pochta.html", email=email, method=request.method)
@@ -130,7 +128,7 @@ def email(email):
         return render_template("pochta.html", email=email, method=request.method)
 
 
-@app.route('/email_confirm/<emaill>/<kod>')
+@app.route('/email_confirm/<emaill>/<kod>')  # Подтверждение
 def email_confirm(emaill, kod):
     if kod + ';' + emaill in emailManager.register_users:
         emailManager.register_users.pop(emailManager.register_users.index(kod + ';' + emaill))
@@ -142,7 +140,7 @@ def email_confirm(emaill, kod):
 
 
 @app.route('/settings', methods=['POST', 'GET'])
-def settings():
+def settings():  # Настройки личных данных
     if not check_login(request.remote_addr):
         return redirect("/")
     app_client = request.args.get('app_client', False) == "True"
@@ -333,7 +331,6 @@ def search():
         return redirect("/")
     txt = request.args.get('txt', "")
     result = database.execute(f"SELECT id, name FROM users WHERE ip = '{request.remote_addr}'").first()
-    id = result[0]
     name = " ".join(result[1].split(";"))
     if txt.isdigit():
         result = database.execute(f"SELECT * FROM users WHERE id = {txt}")
@@ -362,7 +359,7 @@ def search():
 def go_out():
     ip = request.remote_addr
     database.execute(
-        f"UPDATE users SET ip = '' WHERE ip = '{ip}'")
+        f"UPDATE users SET ip = '' WHERE ip = '{ip}'")  # ip становится пустым, можно войти в другой аккаунт
     return redirect('/')
 
 
@@ -370,10 +367,10 @@ def go_out():
 def avatar():
     if not check_login(request.remote_addr):
         return redirect("/")
-    force = request.args.get("force", False) == "True"
+    force = request.args.get("force", False) == "True"  # Если пользователь хочет сам поменять аватарку
     ip = request.remote_addr
     id = database.execute(f"SELECT id FROM users WHERE ip = '{ip}'").first()[0]
-    if os.path.exists(app.config['UPLOAD_FOLDER'] + f"{id}.jpg") and not force:
+    if os.path.exists(app.config['UPLOAD_FOLDER'] + f"{id}.jpg") and not force:  # Если аватарка уже стоит
         return redirect("/download")
     if request.method == 'GET':
         return render_template('settings2.html')
@@ -392,7 +389,7 @@ def avatar():
                 return redirect("/download")
 
 
-@app.route('/all_avatars/<avatar_name>')
+@app.route('/all_avatars/<avatar_name>')  # Открыть аватарку по id.
 def all_avatars(avatar_name):
     if avatar_name == "":
         return send_file('static\\all_avatars\\icon.jpg')
@@ -413,4 +410,5 @@ def set_menu():
 
 
 if __name__ == '__main__':
+    # Тут можно менять хост и порт
     app.run(port=9999, host='127.0.0.1')

@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Table
 import os
 
 
-class Database:
+class Database:  # Класс для более удобной работы с sqlalchemy
     def __init__(self, fname):
         if not os.path.join(fname):
             raise FileNotFoundError("Указанный файл не найден!")

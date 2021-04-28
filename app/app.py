@@ -11,31 +11,33 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QThread
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QStackedWidget, QFileDialog
 
-SERVER_ADDRESS = "127.0.0.1:9999"
-SEND_GET_REQUESTS = False
+SERVER_ADDRESS = "127.0.0.1:9999"  # Адрес сайта, по дефолту локальный
+SEND_GET_REQUESTS = False  # Отправлять ли get запросы на сервер для обновления диалогов
 
 
-class Login(QMainWindow):
+class Login(QMainWindow):  # Окно логина. Если вход с этого ip уже осуществлён, то логин и пароль можно ввести любые
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
         uic.loadUi('ui/login.ui', self)
-        self.stack = QStackedWidget()
+        self.stack = QStackedWidget()  # Виджет для переключения между окнами
         self.stack.addWidget(self)
+        self.stack.setWindowTitle("Barrelgram")
         self.stack.setCurrentWidget(self)
-        self.requestThread = RequestThread()
+        self.requestThread = RequestThread()  # Поток для запросов
         self.main = Main(self.requestThread)
         self.stack.addWidget(self.main)
         self.stack.setGeometry(self.geometry())
         self.stack.show()
-        self.requestThread.start()
+        self.requestThread.start()  # Запуск потока
         self.button_login.clicked.connect(self.login)
 
     #        self.login(raw=True) Планировалось сделать автоматический вход, но PyQt не хочет
 
-    def login(self, raw=False):
+    def login(self, raw=False):  # Параметр row нужен был для автоматического входа, если с этого ip уже вошли
+        # Но PyQt не успевал так быстро переключать виджеты
         if (self.login_input.text() == "" or self.password_input.text() == "") and not raw:
             return
 
@@ -54,25 +56,25 @@ class Login(QMainWindow):
                 global SEND_GET_REQUESTS
                 self.button_login.setText("Login")
                 self.main.updateData(response, load_photo=True)
-                self.stack.setCurrentWidget(self.main)
-                SEND_GET_REQUESTS = True
+                self.stack.setCurrentWidget(self.main)  # Переключение на основное окно
+                SEND_GET_REQUESTS = True  # Включение запросов
 
 
-class Main(QWidget):
+class Main(QWidget):  # Главное окно
     def __init__(self, requestThread):
         super().__init__()
-        self.dialogues = {}
-        self.active_dialogue = None
-        self.delta_down = 0
-        self.searching = False
+        self.dialogues = {}  # Текущие диалоги (формат json)
+        self.active_dialogue = None  # Активный диалог (от 1 до 10)
+        self.delta_down = 0  # Сколько строк вниз пролистано в истории переписки
+        self.searching = False  # Выполняется ли поиск
         self.requestThread = requestThread
-        self.buttonThread = ButtonThread()
+        self.buttonThread = ButtonThread()  # Этот поток нужен чтобы подсвечивать активный диалог
         self.buttonThread.start()
         self.buttonThread.triggered.connect(self.light_active_dialogue)
         self.initUI()
-        self.dial_text = ""
+        self.dial_text = ""  # История текущего диалога
 
-    def initUI(self):
+    def initUI(self):  # Инициализация графики
         uic.loadUi('ui/main.ui', self)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
         self.uiMessages = [self.line_1, self.line_2, self.line_3, self.line_4, self.line_5,
@@ -105,11 +107,11 @@ class Main(QWidget):
         for b in self.dialogue_buttons.buttons():
             b.clicked.connect(self.openDialogue)
 
-    def handleResponse(self, jsonfile):
+    def handleResponse(self, jsonfile):  # Обработка результата запроса
         self.updateData(jsonfile, load_photo=False)
         self.updateActiveDialogue()
 
-    def light_active_dialogue(self):
+    def light_active_dialogue(self):  # Подсветка активного диалога
         if self.active_dialogue is None:
             for el in self.uiDialogues:
                 el[0].setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 0);")
@@ -122,11 +124,11 @@ class Main(QWidget):
                     self.uiDialogues[i][0] \
                         .setStyleSheet("border-top: 2px solid #DCDCDC;background-color: rgba(255, 147, 85, 0);")
 
-    def support(self):
+    def support(self):  # Открыть диалог с поддержкой. По умолчанию id админа 1.
         self.search.setText("1")
         self.search_fun()
 
-    def updateData(self, jsonfile, load_photo=False):
+    def updateData(self, jsonfile, load_photo=False):  # Обновить страницу. load_photo значит обновлять картинки или нет
         my_id = jsonfile["id"]
         my_name = jsonfile["name"]
         if load_photo:
@@ -142,7 +144,7 @@ class Main(QWidget):
                 else:
                     for el in self.uiDialogues[i - 1]:
                         el.show()
-        for i in range(10):
+        for i in range(10):  # Отображение данных в ячейках с диалогом
             name = self.dialogues[str(i + 1)]["name"]
             last_message = self.dialogues[str(i + 1)]["last_message"]
             new_messages = self.dialogues[str(i + 1)]["new_messages"]
@@ -169,12 +171,12 @@ class Main(QWidget):
         self.your_id.setText("Your id: " + str(my_id))
         self.current_user.setText(my_name)
 
-    def search_fun(self):
+    def search_fun(self):  # Поиск
         if "🔎" in self.search.text() or self.search.text() == "":
             self.search.setText("🔎 Enter name or id")
         else:
             global SEND_GET_REQUESTS
-            SEND_GET_REQUESTS = False
+            SEND_GET_REQUESTS = False  # На время поиска страница не автообновляется
             self.searching = True
             self.active_dialogue = None
             for el in self.uiMessages:
@@ -185,7 +187,7 @@ class Main(QWidget):
             users = requests.get("http://" + SERVER_ADDRESS + "/main/search", params=params).json()
             self.updateData(users, load_photo=True)
 
-    def send_file(self):
+    def send_file(self):  # Отправка файла на сервер. Ограничение 200 МБ
         if self.active_dialogue is None:
             return
         fname = QFileDialog.getOpenFileName(self, 'Choose a file', '',
@@ -219,13 +221,13 @@ class Main(QWidget):
                 "http://" + SERVER_ADDRESS + f"/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}",
                 data=data, files=files, stream=True)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event):  # События клавиатуры для отправки сообщения
         if int(event.modifiers()) == Qt.CTRL:
             if event.key() == Qt.Key_Return and self.message_input.toPlainText().replace(" ", "").replace("\t",
                                                                                                           "") != "":
                 self.send_message(self.message_input.toPlainText())
 
-    def wheelEvent(self, event):
+    def wheelEvent(self, event):  # Листать историю
         if self.active_dialogue is None:
             return
 
@@ -236,7 +238,7 @@ class Main(QWidget):
             if self.delta_down > 0:
                 self.delta_down -= 1
 
-    def send_message(self, message):
+    def send_message(self, message):  # Отправка текстового сообщения
         if self.active_dialogue is None:
             return
         id_1 = self.active_dialogue
@@ -252,7 +254,7 @@ class Main(QWidget):
         self.active_dialogue = 1
         self.updateAvatars()
 
-    def updateActiveDialogue(self):
+    def updateActiveDialogue(self):  # Обновление активного диалога
         if self.active_dialogue is None:
             return
         msgs = requests.get("http://" + SERVER_ADDRESS +
@@ -268,7 +270,7 @@ class Main(QWidget):
                 show += f"{self.uiDialogues[self.active_dialogue - 1][1].text().split(' ')[0]}: "
             if msg['type'] == "text":
                 show += msg["text"]
-            elif msg['type'] == "video":
+            elif msg['type'] == "video":  # Так делаются гиперссылки
                 show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}/video/{msg['text']}\">Video</a>"
             elif msg['type'] == "photo":
                 show += f"<a href=\"http://{SERVER_ADDRESS}/main/dialogue/{self.dialogues[str(self.active_dialogue)]['id']}/photo/{msg['text']}\">Photo</a>"
@@ -277,9 +279,9 @@ class Main(QWidget):
             text = text + "\n" + show
         self.setMessages(text)
 
-    def openDialogue(self):
+    def openDialogue(self):  # Открыть диалог
         global SEND_GET_REQUESTS
-        id = int(self.sender().objectName().split("_")[1])
+        id = int(self.sender().objectName().split("_")[1])  # id нажатой кнопки
         if id == self.active_dialogue or self.uiDialogues[self.delta_down + id - 1][1].text() == "":
             return
         for el in self.uiMessages:
@@ -313,12 +315,13 @@ class Main(QWidget):
         self.setMessages(text, scroll_to_end=True)
         self.updateAvatars()
 
-    def setMessages(self, text, scroll_to_end=False):
+    def setMessages(self, text, scroll_to_end=False):  # Установка новой историии сообщений.
+        # Scroll to end - то есть пролистать в конец истории
         text = text.strip("\n")
         text = text.split("\n")
 
         def string_split(x):
-            if "<a href" not in x:
+            if "<a href" not in x:  # Гениальная проверка на наличие ссылки
                 parts = []
                 while len(x) > 60:
                     parts.append(x[:61])
@@ -350,7 +353,7 @@ class Main(QWidget):
                 break
         self.dial_text = true_text
 
-    def updateAvatars(self):
+    def updateAvatars(self):  # Загрузить аватарки. Иногда могут подвисать, но так и должно быть
         for i in range(10):
             name = self.dialogues[str(i + 1)]["name"]
             self.pixmaps[0][i] = self.load_photo(self.dialogues[str(i + 1)]["photo"], self.uiDialogues[i][3])
@@ -360,13 +363,13 @@ class Main(QWidget):
             else:
                 self.uiDialogues[i][3].clear()
 
-    def logOut(self):
+    def logOut(self):  # Выйти
         global SEND_GET_REQUESTS
         requests.get("http://" + SERVER_ADDRESS + "/go_out")
         SEND_GET_REQUESTS = False
         main.stack.setCurrentWidget(main)
 
-    def load_photo(self, id, label):
+    def load_photo(self, id, label):  # Получение фотографии с сайта
         if id == "":
             id = "icon"
         im = Image.open(requests.get("http://" + SERVER_ADDRESS + f"/all_avatars/{id}", stream=True).raw)
@@ -402,7 +405,7 @@ class ButtonThread(QThread):  # Поток, подсвечивающий отд�
             time.sleep(0.01)
 
 
-def except_hook(cls, exception, traceback):
+def except_hook(cls, exception, traceback):  # Чтобы видеть где косяк
     sys.__excepthook__(cls, exception, traceback)
 
 
